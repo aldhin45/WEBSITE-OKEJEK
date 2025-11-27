@@ -1,0 +1,113 @@
+@import url('/css/home.css');
+
+.content {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 60px 20px;
+}
+
+.confirm-box {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 16px;
+  padding: 40px;
+  width: 100%;
+  max-width: 600px;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.5);
+  text-align: center;
+}
+
+.confirm-box h2 {
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  color: #ccc;
+  margin-bottom: 25px;
+}
+
+.detail-box {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: left;
+  margin-bottom: 30px;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  color: #ddd;
+}
+
+.detail-item strong {
+  color: #fff;
+}
+
+.driver-info {
+  text-align: left;
+  margin-bottom: 30px;
+}
+
+.driver-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 15px 20px;
+  border-radius: 12px;
+}
+
+.driver-card .avatar {
+  width: 50px;
+  height: 50px;
+  background: var(--accent);
+  color: #042020;
+  font-weight: bold;
+  font-size: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.status {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.action-btns {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.btn,
+.btn-outline {
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.btn {
+  background: var(--accent);
+  color: #042020;
+}
+
+.btn:hover {
+  background: #00e07e;
+}
+
+.btn-outline {
+  border: 2px solid var(--accent);
+  color: var(--accent);
+}
+
+.btn-outline:hover {
+  background: var(--accent);
+  color: #042020;
+}

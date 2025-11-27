@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Beranda | Oke-Jek</title>
+  <link rel="stylesheet" href="/css/home.css">
+</head>
+<body>
+  <header class="navbar">
+    <div class="container">
+      <h1 class="logo">Oke-Jek</h1>
+      <nav class="nav-links">
+        <a href="/home" class="active">Beranda</a>
+        <a href="/pesan">Pesan</a>
+        <a href="/riwayat">Riwayat</a>
+        <a href="/profil">Profil</a>
+        <a href="/keluar" class="logout">Keluar</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-inner">
+        <div class="hero-text">
+          <h2>Hai, <span id="username">Pengguna</span> 👋</h2>
+          <p>Selamat datang kembali di <strong>Oke-Jek</strong> siap antar kamu ke mana saja dengan cepat dan aman.</p>
+          <a href="/pesan" class="btn">Pesan Sekarang</a>
+        </div>
+        <div class="hero-image">
+          <img src="/img/ojol.jpeg" alt="Ojek Motor" />
+        </div>
+      </div>
+    </section>
+
+    <section class="services container">
+      <h2>Layanan Populer</h2>
+      <div class="service-grid">
+        <div class="card">
+          <h3>Ojek Motor</h3>
+          <p>Transportasi cepat dan hemat untuk perjalanan jarak dekat.</p>
+          <a href="/pesan" class="btn">Pesan Sekarang</a>
+        </div>
+        <div class="card">
+          <h3>Ojek Mobil</h3>
+          <p>Kenyamanan maksimal dengan driver profesional.</p>
+          <a href="/pesan" class="btn">Pesan Sekarang</a>
+        </div>
+        <div class="card">
+          <h3>Kirim Barang</h3>
+          <p>Pengiriman instan dan aman untuk kebutuhanmu.</p>
+          <a href="/pesan" class="btn">Mulai Kirim</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="drivers container">
+      <h2>Driver Aktif Terdekat</h2>
+      <div class="driver-list" id="driverContainer">
+        <p style="text-align:center; color:#888;">Mencari driver...</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>© <span id="year"></span> Oke-Jek</p>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // 1. LOAD NAMA USER
+    async function loadUserName() {
+        try {
+            const response = await fetch('/api/user');
+            const data = await response.json();
+            if (data.success) {
+                document.getElementById('username').textContent = data.user.nama;
+            }
+        } catch (error) {
+            console.error("Gagal ambil user");
+        }
+    }
+
+    // 2. LOAD DRIVER AKTIF DARI DATABASE (UPDATE)
+    async function loadDrivers() {
+        try {
+            const response = await fetch('/api/drivers');
+            const result = await response.json();
+            const container = document.getElementById('driverContainer');
+            
+            if (result.success && result.data.length > 0) {
+                container.innerHTML = ''; 
+
+                result.data.forEach(driver => {
+                    const initials = driver.nama.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                    
+                    // Hitung jarak acak untuk tampilan
+                    const jarak = (Math.random() * 3 + 0.5).toFixed(1); 
+
+                    const div = document.createElement('div');
+                    div.classList.add('driver');
+                    div.innerHTML = `
+                        <div class="avatar">${initials}</div>
+                        <div class="info">
+                            <strong>${driver.nama}</strong>
+                            <span style="font-size: 0.85rem; color: #ccc;">
+                                ${driver.merk_kendaraan} • ${driver.nomor_polisi}
+                            </span>
+                            <span style="font-size: 0.8rem; color: #00e08f;">
+                                ${jarak} km
+                            </span>
+                        </div>
+                        <div class="status online">Online</div>
+                    `;
+                    container.appendChild(div);
+                });
+            }
+        } catch (error) {
+            console.error("Gagal ambil driver");
+        }
+    }
+
+    loadUserName();
+    loadDrivers();
+  </script>
+</body>
+</html>

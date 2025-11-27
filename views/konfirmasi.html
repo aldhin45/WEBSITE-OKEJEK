@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Konfirmasi Pesanan | Oke-Jek</title>
+  <link rel="stylesheet" href="/css/konfirmasi.css">
+</head>
+
+<body>
+  <header class="navbar">
+    <div class="container">
+      <h1 class="logo">Oke-Jek</h1>
+      <nav class="nav-links">
+        <a href="/home">Beranda</a>
+        <a href="/pesan" class="active">Pesan</a>
+        <a href="/riwayat">Riwayat</a>
+        <a href="/profil">Profil</a>
+        <a href="/keluar" class="logout">Keluar</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="content">
+    <div class="confirm-box">
+      <h2>Konfirmasi Pesanan</h2>
+      <p class="subtitle">Periksa kembali detail perjalananmu sebelum melanjutkan.</p>
+
+      <div class="detail-box">
+        <div class="detail-item">
+          <span>Jenis Layanan:</span>
+          <strong id="layanan">Ojek Motor</strong>
+        </div>
+        <div class="detail-item">
+          <span>Lokasi Jemput:</span>
+          <strong id="jemput">Jl. Soedirman No.10</strong>
+        </div>
+        <div class="detail-item">
+          <span>Tujuan:</span>
+          <strong id="tujuan">Stasiun Purwokerto</strong>
+        </div>
+        <div class="detail-item">
+          <span>Estimasi Harga:</span>
+          <strong id="harga">Rp 18.000</strong>
+        </div>
+      </div>
+
+      <div class="driver-info">
+        <h3>Driver Terdekat</h3>
+        <div class="driver-card">
+          <div class="avatar">AH</div>
+          <div>
+            <strong>A. Hadi</strong>
+            <p>Honda Beat • B 1234 CD</p>
+          </div>
+          <span class="status">3 Menit Lagi</span>
+        </div>
+      </div>
+
+      <div class="action-btns">
+        <a href="/pesan" class="btn-outline">Ubah Pesanan</a>
+        <a href="/riwayat" class="btn">Konfirmasi & Lanjutkan</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© <span id="year"></span> Oke-Jek</p>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

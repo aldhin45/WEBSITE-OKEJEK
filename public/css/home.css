@@ -1,0 +1,328 @@
+/* ===== HERO SECTION ===== */
+.hero {
+  background: linear-gradient(120deg, rgba(0,255,170,0.1), rgba(0,255,170,0.05));
+  padding: 60px 0;
+}
+
+.hero-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 40px;
+}
+
+.hero-text {
+  flex: 1;
+  min-width: 300px;
+}
+
+.hero-text h2 {
+  color: var(--accent);
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.hero-text p {
+  color: #ddd;
+  max-width: 450px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.hero-image img {
+  width: 220px;
+  filter: drop-shadow(0 0 10px rgba(0,255,170,0.3));
+}
+
+/* ===== SERVICES SECTION ===== */
+.services {
+  margin-top: 60px;
+  text-align: center;
+}
+
+.service-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 25px;
+  margin-top: 25px;
+}
+
+.card {
+  background: rgba(255,255,255,0.03);
+  padding: 25px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.05);
+  transition: 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+}
+
+/* ===== DRIVER SECTION ===== */
+.drivers {
+  margin: 80px auto;
+  text-align: center;
+}
+
+.driver-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 600px;
+  margin: 20px auto;
+}
+
+.driver {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255,255,255,0.05);
+  padding: 15px 20px;
+  border-radius: 10px;
+}
+
+.driver .avatar {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #042020;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.status.online {
+  color: var(--accent);
+  font-weight: bold;
+}
+
+/* ======================
+   Tema Dasar
+====================== */
+:root {
+  --bg: #0b1218;
+  --text: #f5f5f5;
+  --accent: #00e08f;
+  --card: #141c22;
+  --hover: #00ffaf;
+}
+
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* ======================
+   Navbar 
+====================== */
+.navbar {
+  background: #111a21;
+  padding: 15px 60px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.navbar .container {
+  display: flex;
+  justify-content: space-between;  
+  align-items: center;
+}
+
+.logo {
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1.6rem;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 25px; /* jarak antar menu */
+}
+
+.nav-links a {
+  color: #cdd3d8;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  color: var(--accent);
+}
+
+.logout {
+  color: #ff5c5c !important;
+}
+
+
+/* ======================
+   Hero Section
+====================== */
+.hero {
+  background: linear-gradient(145deg, rgba(0,224,143,0.08), rgba(0,224,143,0.02));
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 100px 10%;
+  flex-wrap: wrap;
+}
+
+.hero-text {
+  max-width: 500px;
+}
+
+.hero-text h2 {
+  font-size: 2.4rem;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+
+.hero-text p {
+  color: #b6c2cc;
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+.hero .btn {
+  margin-top: 20px;
+  padding: 12px 25px;
+  background: var(--accent);
+  color: #042020;
+  border-radius: 8px;
+  font-weight: 600;
+  border: none;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.hero .btn:hover {
+  background: var(--hover);
+}
+
+.hero-image img {
+  width: 250px;
+  filter: drop-shadow(0 0 20px rgba(0,255,170,0.4));
+}
+
+/* ======================
+   Layanan Populer
+====================== */
+.services {
+  padding: 60px 10%;
+  text-align: center;
+}
+
+.services h2 {
+  font-size: 1.8rem;
+  margin-bottom: 35px;
+  color: var(--text);
+}
+
+.service-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 25px;
+}
+
+.card {
+  background: var(--card);
+  border-radius: 14px;
+  padding: 30px;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+.card h3 {
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+
+.card p {
+  color: #cdd3d8;
+  font-size: 0.95rem;
+  margin-bottom: 20px;
+}
+
+.card .btn {
+  background: var(--accent);
+  color: #042020;
+  padding: 10px 18px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+/* ======================
+   Driver Aktif
+====================== */
+.drivers {
+  padding: 60px 10%;
+  text-align: center;
+}
+
+.drivers h2 {
+  margin-bottom: 25px;
+}
+
+.driver-list {
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.driver {
+  background: var(--card);
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+.avatar {
+  background: var(--accent);
+  color: #042020;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.status.online {
+  color: var(--accent);
+  font-weight: bold;
+}
+
+/* ======================
+   Footer
+====================== */
+.footer {
+  text-align: center;
+  padding: 20px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  color: #bbb;
+  font-size: 0.9rem;
+  margin-top: 40px;
+}

@@ -1,0 +1,212 @@
+:root {
+  --bg: #0f1720;
+  --accent: #00c16b;
+  --text: #fff;
+  --muted: #a0a7b0;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: "Inter", sans-serif;
+  background: linear-gradient(160deg, #071018 0%, #0f1720 100%);
+  color: var(--text);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.login-container {
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+}
+
+.login-box {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 40px 30px;
+  text-align: center;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+}
+
+h1 {
+  font-size: 28px;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+
+.subtitle {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 28px;
+}
+
+.form-group {
+  text-align: left;
+  margin-bottom: 16px;
+}
+
+label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: transparent;
+  color: var(--text);
+  font-size: 15px;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: rgba(255,255,255,0.05);
+}
+
+.btn {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  background: var(--accent);
+  color: #042020;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin-top: 12px;
+}
+
+.btn:hover {
+  background: #00e07e;
+}
+
+.link {
+  font-size: 14px;
+  color: var(--muted);
+  margin-top: 20px;
+}
+
+.link a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.link a:hover {
+  text-decoration: underline;
+}
+
+/* --- SETUP HALAMAN LOGIN (CENTERING) --- */
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #0b1218;
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+}
+
+/* --- KOTAK LOGIN --- */
+.login-container {
+  background: #141c22;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.login-container h1 {
+  color: #00e08f;
+  margin-bottom: 10px;
+  font-size: 2rem;
+}
+
+.login-container p {
+  color: #ccc;
+  margin-bottom: 30px;
+}
+
+/* --- FORM STYLE --- */
+.form-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+label {
+  display: block;
+  color: #fff;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  background: #0b1218;
+  border: 1px solid #333;
+  color: white;
+  box-sizing: border-box; /* Agar padding tidak melebarkan elemen */
+  font-size: 1rem;
+  outline: none;
+  transition: 0.3s;
+}
+
+input:focus {
+  border-color: #00e08f;
+  box-shadow: 0 0 8px rgba(0, 224, 143, 0.2);
+}
+
+/* --- TOMBOL --- */
+.btn {
+  width: 100%;
+  padding: 12px;
+  background: #00e08f;
+  border: none;
+  border-radius: 8px;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-top: 10px;
+  transition: 0.3s;
+}
+
+.btn:hover {
+  background: #00ffaf;
+  transform: translateY(-2px);
+}
+
+.btn:disabled {
+  background: #555;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* --- LINK FOOTER --- */
+.link {
+  margin-top: 20px;
+  font-size: 0.9rem;
+  color: #888;
+}
+
+.link a {
+  color: #00e08f;
+  text-decoration: none;
+}
+
+.link a:hover {
+  text-decoration: underline;
+}

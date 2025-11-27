@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daftar Driver | Oke-Jek</title>
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/login.css">
+  <link rel="stylesheet" href="/css/daftar-driver.css">
+</head>
+<body>
+
+  <div class="login-container" style="max-width: 500px;">
+    <h1>Mitra Driver</h1>
+    <p>Bergabunglah dan raih penghasilan tambahan!</p>
+
+    <form id="driverForm">
+      <div class="form-group">
+        <label for="nama">Nama Lengkap</label>
+        <input type="text" id="nama" required>
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" required>
+      </div>
+      <div class="form-group">
+        <label for="no_telepon">Nomor Telepon</label>
+        <input type="tel" id="no_telepon" required>
+      </div>
+
+      <hr>
+
+      <div class="form-group">
+        <label for="jenis_kendaraan">Jenis Kendaraan</label>
+        <select id="jenis_kendaraan">
+            <option value="Motor">Motor</option>
+            <option value="Mobil">Mobil</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="merk_kendaraan">Merk & Tipe Kendaraan</label>
+        <input type="text" id="merk_kendaraan" placeholder="Contoh: Honda Vario 150" required>
+      </div>
+      <div class="form-group">
+        <label for="nomor_polisi">Nomor Polisi</label>
+        <input type="text" id="nomor_polisi" placeholder="Contoh: R 1234 ABC" required>
+      </div>
+
+      <button type="submit" class="btn" id="btnSubmit">Daftar Sekarang</button>
+      
+      <p class="link">Ingin pesan ojek saja? <a href="/daftar" class="link-driver">Daftar Pengguna</a></p>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById("driverForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById("btnSubmit");
+      btn.textContent = "Memproses...";
+      btn.disabled = true;
+
+      const data = {
+          nama: document.getElementById('nama').value,
+          email: document.getElementById('email').value,
+          password: document.getElementById('password').value,
+          no_telepon: document.getElementById('no_telepon').value,
+          jenis_kendaraan: document.getElementById('jenis_kendaraan').value,
+          merk_kendaraan: document.getElementById('merk_kendaraan').value,
+          nomor_polisi: document.getElementById('nomor_polisi').value
+      };
+
+      try {
+        const response = await fetch("/daftar-driver", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            alert("Pendaftaran Berhasil! Silakan Login.");
+            window.location.href = "/login";
+        } else {
+            alert(result.message);
+            btn.textContent = "Daftar Sekarang";
+            btn.disabled = false;
+        }
+      } catch (error) {
+        console.error(error);
+        alert("Gagal menghubungi server");
+        btn.textContent = "Daftar Sekarang";
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

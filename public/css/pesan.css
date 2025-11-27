@@ -1,0 +1,170 @@
+/* ======================
+   1. TEMA DASAR 
+====================== */ 
+:root {
+    --bg: #0b1218;         
+    --text: #f5f5f5;       
+    --accent: #00e08f;     
+    --card: #141c22;       
+    --hover: #00ffaf;      
+    --input-bg: #0b1218;   
+    --border: rgba(255, 255, 255, 0.1);
+}
+
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+/* ======================
+   2. NAVBAR 
+====================== */
+.navbar {
+    background: #111a21;
+    padding: 15px 60px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.logo {
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 1.6rem;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.nav-links a {
+    color: #cdd3d8;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    color: var(--accent);
+}
+
+.logout {
+    color: #ff5c5c !important;
+}
+
+/* ======================
+   3. LAYOUT KONTEN
+====================== */
+.content {
+    max-width: 500px; 
+    margin: 60px auto;
+    padding: 0 20px;
+    min-height: 60vh;
+}
+
+.content h2 {
+    text-align: center;
+    color: var(--accent); 
+    font-size: 2rem;
+    margin-bottom: 30px;
+}
+
+/* ======================
+   4. FORM STYLE 
+====================== */
+.order-form {
+    background: var(--card);
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.order-form label {
+    font-weight: 500;
+    color: #ccc;
+    font-size: 0.95rem;
+    margin-bottom: -10px; 
+}
+
+/* Input & Select Style */
+.order-form input, 
+.order-form select {
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    color: white;
+    padding: 12px 15px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: inherit;
+    outline: none;
+    transition: 0.3s;
+}
+
+.order-form input:focus, 
+.order-form select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 8px rgba(0, 224, 143, 0.2);
+}
+
+
+::placeholder {
+    color: #666;
+}
+
+/* ======================
+   5. BUTTON STYLE 
+====================== */
+.btn {
+    margin-top: 10px;
+    background: var(--accent); 
+    color: #042020;            
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn:hover {
+    background: var(--hover); 
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 224, 143, 0.3);
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+/* ======================
+   6. FOOTER
+====================== */
+.footer {
+    text-align: center;
+    padding: 30px;
+    border-top: 1px solid var(--border);
+    color: #666;
+    font-size: 0.9rem;
+    margin-top: 50px;
+}

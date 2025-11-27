@@ -1,0 +1,175 @@
+/* ======================
+   TEMA DASAR
+====================== */
+:root {
+    --bg: #0b1218;
+    --text: #f5f5f5;
+    --accent: #00e08f;
+    --card: #141c22;
+}
+
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+/* ======================
+   NAVBAR
+====================== */
+.navbar {
+    background: #111a21;
+    padding: 15px 60px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.logo {
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 1.6rem;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.nav-links a {
+    color: #cdd3d8;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    color: var(--accent);
+}
+
+.logout {
+    color: #ff5c5c !important;
+}
+
+/* ======================
+   KONTEN PROFIL
+====================== */
+.content {
+    max-width: 500px;
+    margin: 60px auto;
+    padding: 0 20px;
+    min-height: 60vh;
+    text-align: center; 
+}
+
+.content h2 {
+    color: var(--text);
+    font-size: 2rem;
+    margin-bottom: 30px;
+}
+
+/* Kotak Profil */
+.profile-box {
+    background: var(--card);
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Avatar Bulat */
+.avatar {
+    width: 100px;
+    height: 100px;
+    background: var(--accent);
+    color: #042020;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    box-shadow: 0 0 20px rgba(0, 224, 143, 0.4);
+}
+
+/* Teks Info */
+.profile-box h3 {
+    margin: 10px 0 5px;
+    color: var(--accent);
+    font-size: 1.5rem;
+}
+
+.profile-box p {
+    color: #ccc;
+    margin: 5px 0;
+}
+
+/* Style khusus untuk No Telepon agar sedikit beda */
+.phone-text {
+    color: #888 !important;
+    font-size: 0.9rem;
+    margin-bottom: 25px !important; 
+}
+
+/* Tombol Edit */
+.btn {
+    text-decoration: none;
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    background: var(--accent);
+    color: #042020;
+}
+
+/* Edit Form Style  */
+.edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    text-align: left; 
+    width: 100%;
+}
+
+.edit-form label {
+    color: #ccc;
+    margin-bottom: -5px;
+}
+
+.edit-form input {
+    background: #0b1218;
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 12px;
+    border-radius: 8px;
+    color: white;
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    padding: 30px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    color: #666;
+    margin-top: 50px;
+}

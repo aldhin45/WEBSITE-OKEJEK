@@ -1,0 +1,54 @@
+
+/* Judul Halaman */
+.login-container h1 { 
+    color: #ffcc00; 
+    margin-bottom: 10px;
+}
+
+/* Tombol Daftar */
+.btn { 
+    background-color: #ffcc00; 
+    color: #000; 
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.btn:hover { 
+    background-color: #e6b800; 
+    transform: translateY(-2px);
+}
+
+/* Dropdown Select */
+select {
+    width: 100%; 
+    padding: 12px; 
+    border-radius: 8px;
+    background: #0b1218; 
+    border: 1px solid #333; 
+    color: white;
+    margin-bottom: 15px; 
+    outline: none;
+    font-size: 1rem;
+}
+
+select:focus {
+    border-color: #ffcc00; 
+}
+
+/* Link Bawah */
+.link-driver {
+    color: #ffcc00;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.link-driver:hover {
+    text-decoration: underline;
+}
+
+/* Garis Pembatas */
+hr {
+    border: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin: 20px 0;
+}

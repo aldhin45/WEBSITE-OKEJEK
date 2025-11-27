@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Oke-Jek — pesan ojek online cepat dan aman." />
+  <title>Oke-Jek — Pesan Ojek Online Cepat & Aman</title>
+
+  <meta property="og:title" content="Oke-Jek — Pesan Ojek Online Cepat & Aman" />
+  <meta property="og:type" content="website" />
+
+  <link rel="stylesheet" href="/css/style.css" />
+  
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/">Oke-Jek</a>
+      <nav class="nav-links">
+        <a href="#services">Layanan</a>
+        <a href="/login">Pesan</a>
+        <a href="#drivers">Driver</a>
+        <a href="#about">Tentang</a>
+      </nav>
+      <div class="nav-cta" id="signin">
+        <a href="/daftar-driver" style="color: #ffcc00; text-decoration: none; margin-right: 15px; font-weight: bold;">Jadi Mitra</a>
+        <a href="/login" class="btn btn-outline btn-login">Masuk</a>
+        <a href="/daftar" class="btn btn-outline">Daftar</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-left">
+          <h1>Pesan ojek online cepat & aman</h1>
+          <p class="lead">Driver terdekat siap jemput. Cek harga pasti sebelum memesan.</p>
+
+          <form id="orderForm" class="order-form" autocomplete="off">
+            <div class="field">
+              <label for="rute_id">Pilih Rute Perjalanan</label>
+              <select id="rute_id" name="rute_id">
+                <option value="">-- Memuat Rute... --</option>
+              </select>
+            </div>
+
+            <div class="form-row">
+              <select id="service" name="service" aria-label="Layanan" style="margin-bottom:0;">
+                <option value="motor">Ojek Motor</option>
+                <option value="mobil">Ojek Mobil</option>
+                <option value="barang">Kirim Barang</option>
+              </select>
+
+              <a href="/login" class="btn btn-primary" style="text-decoration:none; text-align:center; display:flex; align-items:center; justify-content:center;">
+                Pesan Sekarang
+              </a>
+            </div>
+
+            <p id="estimate" class="estimate">
+                Estimasi: <span id="priceDisplay" class="estimate-highlight">Rp 0</span>
+            </p>
+          </form>
+        </div>
+
+        <div class="map-placeholder">
+          <div id="map"></div>
+          <div class="map-overlay">
+            <div class="eta">Driver terdekat: <strong>3 min</strong></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="services" class="section services container">
+      <h2 class="section-title">Layanan Kami</h2>
+      <div class="cards">
+        <article class="card">
+          <h3>Ojek Motor</h3>
+          <p>Hemat dan cepat untuk perjalanan singkat.</p>
+        </article>
+        <article class="card">
+          <h3>Ojek Mobil</h3>
+          <p>Nyaman untuk keluarga atau barang banyak.</p>
+        </article>
+        <article class="card">
+          <h3>Pengiriman</h3>
+          <p>Kirim paket dengan tracking sederhana.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="drivers" class="section drivers container">
+      <h2 class="section-title">Driver Terdekat</h2>
+      <div class="driver-grid" id="driverGrid">
+        <p style="text-align:center; width:100%;">Mencari driver...</p>
+      </div>
+    </section>
+
+    <section id="about" class="section about container">
+      <div class="about-grid">
+        <div>
+          <h2>Kenapa pilih Oke-Jek?</h2>
+          <ul>
+            <li>Estimasi harga transparan</li>
+            <li>Driver terverifikasi</li>
+            <li>Layanan 24/7</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div>© <span id="year"></span> Oke-Jek</div>
+      <nav class="footer-links">
+        <a href="#">Kebijakan</a>
+        <a href="#">Privasi</a>
+        <a href="#">Bantuan</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="/js/app.js"></script>
+  
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // 1. LOGIKA RUTE & HARGA
+    let dataRute = [];
+    async function loadRute() {
+        try {
+            const response = await fetch('/api/rute');
+            const result = await response.json();
+            const select = document.getElementById('rute_id');
+            if (result.success) {
+                dataRute = result.data;
+                select.innerHTML = '<option value="">-- Pilih Lokasi --</option>';
+                dataRute.forEach(rute => {
+                    const option = document.createElement('option');
+                    option.value = rute.id;
+                    option.textContent = `${rute.asal} ➝ ${rute.tujuan}`;
+                    select.appendChild(option);
+                });
+            }
+        } catch (error) {}
+    }
+
+    function updateHarga() {
+        const ruteId = document.getElementById('rute_id').value;
+        const layanan = document.getElementById('service').value;
+        const display = document.getElementById('priceDisplay');
+        if (!ruteId) { display.textContent = "Rp 0"; return; }
+        const rute = dataRute.find(r => r.id == ruteId);
+        if (rute) {
+            let harga = (layanan === 'motor') ? rute.harga_motor : (layanan.includes('mobil') ? rute.harga_mobil : rute.harga_barang);
+            display.textContent = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(harga);
+        }
+    }
+    document.getElementById('rute_id').addEventListener('change', updateHarga);
+    document.getElementById('service').addEventListener('change', updateHarga);
+    loadRute();
+
+    // 2. LOAD DRIVER DARI DATABASE
+    async function loadDrivers() {
+        try {
+            const response = await fetch('/api/drivers');
+            const result = await response.json();
+            const container = document.getElementById('driverGrid');
+            
+            if (result.success && result.data.length > 0) {
+                container.innerHTML = '';
+                result.data.forEach(driver => {
+                    const initials = driver.nama.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                    const jarak = (Math.random() * 3 + 0.5).toFixed(1); 
+                    const kendaraan = Math.random() > 0.5 ? 'Motor' : 'Mobil';
+
+                    const div = document.createElement('div');
+                    div.className = 'driver';
+                    div.innerHTML = `
+                        <div class="avatar">${initials}</div>
+                        <div class="info">
+                            <strong>${driver.nama}</strong>
+                            <span>${kendaraan} • ${jarak} km</span>
+                        </div>
+                        <div class="status">Online</div>
+                    `;
+                    container.appendChild(div);
+                });
+            }
+        } catch (error) {}
+    }
+    loadDrivers();
+
+    // 3. PETA (Leaflet)
+    const map = L.map('map').setView([-7.4234, 109.2478], 15);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+    L.marker([-7.4234, 109.2478]).addTo(map).bindPopup('<b>Pusat Oke-Jek</b>').openPopup();
+  </script>
+</body>
+</html>

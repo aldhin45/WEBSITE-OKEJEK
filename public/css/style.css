@@ -1,0 +1,192 @@
+:root{
+  --bg:#0f1720;
+  --card:#0b1220;
+  --accent:#00c16b;
+  --muted:#9aa3ac;
+  --white:#fff;
+  --max-w:1100px;
+  --radius:12px;
+  --glass: rgba(255,255,255,0.03);
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
+  background:linear-gradient(180deg,#071018 0%, #0f1720 100%);
+  color:var(--white);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  line-height:1.45;
+}
+
+/* container */
+.container{
+  width:90%;
+  max-width:var(--max-w);
+  margin:0 auto;
+}
+
+/* nav */
+.nav{
+  position:sticky;top:0;z-index:80;
+  background:linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.12));
+  backdrop-filter: blur(6px);
+  border-bottom:1px solid rgba(255,255,255,0.03);
+}
+.nav-inner{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  padding:14px 0;
+}
+.brand{
+  font-weight:700;
+  font-size:20px;
+  color:var(--white);
+  text-decoration:none;
+  letter-spacing:0.3px;
+}
+.nav-links{margin-left:auto;display:flex;gap:18px;align-items:center}
+.nav-links a{
+  color:var(--white);
+  text-decoration:none;
+  opacity:0.9;
+  font-weight:500;
+  transition:opacity .15s;
+}
+.nav-links a:hover{opacity:1}
+.nav-cta{display:flex;gap:10px;align-items:center;margin-left:16px}
+.btn{padding:8px 14px;border-radius:8px;border:1px solid transparent;cursor:pointer;font-weight:600}
+.btn-primary{background:var(--accent);color:#042020;border-color:rgba(0,0,0,0.12)}
+.btn-outline{background:transparent;border-color:rgba(255,255,255,0.06);color:var(--white)}
+
+/* hero */
+.hero{padding:64px 0 48px}
+.hero-grid{display:grid;grid-template-columns:1fr 460px;gap:28px;align-items:center}
+.hero-left h1{font-size:38px;margin:0 0 12px}
+.lead{color:var(--muted);margin-bottom:18px}
+.order-form{background:var(--card);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+.field{margin-bottom:12px}
+.field label{display:block;color:var(--muted);font-size:13px;margin-bottom:6px}
+.field input, .order-form select{
+  width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:var(--white)
+}
+.form-row{display:flex;gap:10px;align-items:center}
+.form-row select{width:40%}
+.form-row button{flex:1}
+.estimate{margin-top:10px;color:var(--muted);font-size:14px}
+
+/* map placeholder */
+.map-placeholder{
+  border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.04);
+  box-shadow: 0 10px 30px rgba(2,6,23,0.7);
+  position:relative;
+}
+.map-placeholder img{display:block;width:100%;height:100%;object-fit:cover}
+.map-overlay{position:absolute;left:12px;top:12px;background:linear-gradient(180deg, rgba(0,0,0,0.55), rgba(0,0,0,0.35));padding:8px 12px;border-radius:10px}
+.map-overlay .eta{color:var(--white);font-weight:600}
+
+/* services */
+.section{padding:48px 0}
+.section-title{font-size:24px;margin-bottom:14px}
+.cards{display:flex;gap:14px;flex-wrap:wrap}
+.card{flex:1;min-width:200px;background:var(--glass);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);color:var(--white)}
+
+/* drivers */
+.driver-grid{display:flex;gap:12px;flex-wrap:wrap}
+.driver{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.03);padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.02);min-width:220px}
+.avatar{width:46px;height:46px;border-radius:10px;background:linear-gradient(135deg,#2ecc71,#27ae60);display:flex;align-items:center;justify-content:center;font-weight:700;color:#042020}
+.info strong{display:block}
+.info span{color:var(--muted);font-size:13px}
+.status{margin-left:auto;color:var(--accent);font-weight:700}
+
+/* about */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;color:var(--muted)}
+.about-grid ul{padding-left:18px}
+
+/* footer */
+.footer{padding:18px 0;border-top:1px solid rgba(255,255,255,0.02);background:transparent}
+.footer-inner{display:flex;justify-content:space-between;align-items:center;gap:12px;color:var(--muted)}
+
+/* responsive */
+@media (max-width:980px){
+  .hero-grid{grid-template-columns:1fr;gap:18px}
+  .nav-links{display:none}
+  .nav-cta{margin-left:auto}
+  .container{width:94%}
+}
+@media (max-width:520px){
+  .hero-left h1{font-size:26px}
+  .form-row{flex-direction:column}
+  .form-row select{width:100%}
+  .footer-inner{flex-direction:column;gap:8px}
+}
+
+#map {
+  width: 100%;
+  height: 400px;
+  border-radius: 12px;
+}
+
+.map-placeholder {
+  position: relative;
+}
+
+.map-overlay {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+/* =========================================
+  STYLE DROPDOWN DI LANDING PAGE
+========================================= */
+
+/* Mengatur input Select (Dropdown) */
+.order-form select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    background: rgba(255, 255, 255, 0.1); 
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+}
+
+.order-form select:focus {
+    border-color: #00e08f; 
+}
+
+/* Mengatur opsi di dalam dropdown */
+.order-form select option {
+    background: #1a1a1a; 
+    color: #fff;
+    padding: 10px;
+}
+
+/* Mengatur Label */
+.order-form label {
+    display: block;
+    margin-bottom: 8px;
+    color: #ccc;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Mengatur Warna Harga Estimasi */
+.estimate-highlight {
+    color: #00e08f; 
+    font-weight: bold; 
+    font-size: 1.2rem;
+}
