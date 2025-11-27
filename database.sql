@@ -50,9 +50,9 @@ CREATE TABLE IF NOT EXISTS `drivers` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table okejekdb.drivers: ~1 rows (approximately)
+-- Dumping data for table okejekdb.drivers: ~5 rows (approximately)
 INSERT INTO `drivers` (`id`, `nama`, `jenis_kendaraan`, `merk_kendaraan`, `nomor_polisi`, `status`) VALUES
-	(12, 'aldino', 'Motor', 'Beat', 'R 1234 X', 'Online');
+	(12, 'aldino', 'Motor', 'Beat', 'R 1234 X', 'Busy');
 
 -- Dumping structure for table okejekdb.pesanan
 CREATE TABLE IF NOT EXISTS `pesanan` (
@@ -70,11 +70,12 @@ CREATE TABLE IF NOT EXISTS `pesanan` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `pesanan_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table okejekdb.pesanan: ~1 rows (approximately)
+-- Dumping data for table okejekdb.pesanan: ~0 rows (approximately)
 INSERT INTO `pesanan` (`id`, `user_id`, `lokasi_jemput`, `tujuan`, `jenis_layanan`, `harga`, `status`, `nama_driver`, `info_kendaraan`, `tanggal`, `rating`) VALUES
-	(9, 13, 'Purwokerto', 'Baturraden', 'motor', 20000.00, 'Selesai', 'rafa', 'Beat (R 1234 X)', '2025-11-27 08:58:52', 0);
+	(9, 13, 'Purwokerto', 'Baturraden', 'motor', 20000.00, 'Selesai', 'rafa', 'Beat (R 1234 X)', '2025-11-27 08:58:52', 0),
+	(10, 13, 'Stasiun Purwokerto', 'Unsoed', 'motor', 12000.00, 'Proses', 'aldino', 'Beat (R 1234 X)', '2025-11-27 10:13:50', 0);
 
 -- Dumping structure for table okejekdb.users
 CREATE TABLE IF NOT EXISTS `users` (
@@ -89,7 +90,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table okejekdb.users: ~4 rows (approximately)
+-- Dumping data for table okejekdb.users: ~0 rows (approximately)
 INSERT INTO `users` (`id`, `nama`, `email`, `no_telepon`, `password`, `created_at`, `role`) VALUES
 	(10, 'Super Admin', 'admin@okejek.com', NULL, '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '2025-11-26 13:19:46', 'admin'),
 	(11, 'adminnew', 'adminnew@okejek.com', NULL, '$2b$10$X3hPewpVwetQ/jFRiE/cjeAZ4Zl.lvO9x18aGbOYQ4Itgu10aD4da', '2025-11-26 13:35:49', 'admin'),
