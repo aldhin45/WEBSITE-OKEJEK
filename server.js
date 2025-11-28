@@ -1,7 +1,7 @@
 // 1. KONFIGURASI ENV
 require('dotenv').config(); 
 
-const crypto = require('crypto');
+const crypto = require('crypto'); // Untuk token acak
 const express = require('express');
 const path = require('path');
 const mysql = require('mysql2');
@@ -16,44 +16,42 @@ const PORT = process.env.PORT || 3000;
 // ------------------ MIDDLEWARE KEAMANAN ------------------ //
 const loginLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, 
-    max: 100, 
+    max: 100, // Dilonggarkan untuk development
     message: { success: false, message: "Terlalu banyak percobaan login." }
 });
 
 // ------------------ MIDDLEWARE UMUM ------------------ //
-// Kembalikan ke __dirname untuk Docker
+// Kembali menggunakan __dirname (Standar Node.js Lokal)
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Session
 app.use(session({
-    secret: process.env.SESSION_SECRET || "rahasia_dapur_okejek", 
+    secret: process.env.SESSION_SECRET || "rahasia_lokal_okejek", 
     resave: false,
     saveUninitialized: true,
     cookie: { 
         maxAge: 24 * 60 * 60 * 1000, 
         httpOnly: true, 
-        secure: false // Docker lokal biasanya HTTP (bukan HTTPS)
+        secure: false // False karena di localhost kita pakai HTTP biasa
     } 
 }));
 
-// ------------------ KONEKSI DATABASE (VERSI DOCKER/LOCAL) ------------------ //
+// ------------------ KONEKSI DATABASE (LOKAL / LARAGON) ------------------ //
 const db = mysql.createConnection({
     host: process.env.DB_HOST || 'localhost',
     user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASS || '', 
-    database: process.env.DB_NAME || 'okejekdb',
-    // Hapus SSL karena Docker internal network tidak butuh SSL
+    password: process.env.DB_PASS || '', // Sesuai settingan Laragon Anda
+    database: process.env.DB_NAME || 'okejekdb'
 });
 
 db.connect((err) => {
     if (err) {
-        console.error("Error connecting to database:", err);
-        // Jangan matikan server jika DB belum siap (biar container tidak crash loop)
+        console.error("Gagal konek database:", err);
         return;
     }
-    console.log("Connected to MySQL (okejekdb)");
+    console.log("Berhasil terhubung ke MySQL (Localhost)");
 });
 
 // ------------------ MIDDLEWARE CEK ROLE ------------------ //
@@ -62,15 +60,16 @@ function harusLogin(req, res, next) {
     next();
 }
 function harusAdmin(req, res, next) {
-    if (req.session.role !== 'admin') return res.status(403).send("Akses Ditolak.");
+    if (req.session.role !== 'admin') return res.status(403).send("Akses Ditolak. Khusus Admin.");
     next();
 }
 function harusDriver(req, res, next) {
-    if (req.session.role !== 'driver') return res.status(403).send("Akses Ditolak.");
+    if (req.session.role !== 'driver') return res.status(403).send("Akses Ditolak. Khusus Driver.");
     next();
 }
 
-// ------------------ ROUTE HALAMAN (KEMBALI KE __DIRNAME) ------------------ //
+// ------------------ ROUTE HALAMAN (VIEW) ------------------ //
+
 function cekRedirect(req, res, file) {
     if (req.session.userId) {
         if (req.session.role === 'admin') return res.redirect('/admin');
@@ -80,12 +79,11 @@ function cekRedirect(req, res, file) {
     res.sendFile(path.join(__dirname, file));
 }
 
+// Halaman Public
 app.get('/', (req, res) => cekRedirect(req, res, 'views/index.html'));
 app.get('/login', (req, res) => cekRedirect(req, res, 'views/login.html'));
 app.get('/daftar', (req, res) => cekRedirect(req, res, 'views/daftar.html'));
 app.get('/daftar-driver', (req, res) => cekRedirect(req, res, 'views/daftar-driver.html'));
-
-// Halaman Tambahan
 app.get('/lupa-password', (req, res) => res.sendFile(path.join(__dirname, 'views', 'lupa-password.html')));
 app.get('/reset-password', (req, res) => res.sendFile(path.join(__dirname, 'views', 'reset-password.html')));
 
@@ -105,12 +103,14 @@ app.get('/keluar', (req, res) => {
     req.session.destroy(() => res.redirect('/'));
 });
 
-// ------------------ API AUTH ------------------ //
+// ------------------ API AUTHENTICATION ------------------ //
 
+// Daftar User Biasa
 app.post('/daftar', [body('nama').trim().escape()], (req, res) => {
     const { nama, email, password } = req.body;
     db.query("SELECT * FROM users WHERE email = ?", [email], async (err, results) => {
-        if (results.length > 0) return res.json({ success: false, message: "Email ada" });
+        if (results.length > 0) return res.json({ success: false, message: "Email sudah terdaftar" });
+        
         const hashedPassword = await bcrypt.hash(password, 10);
         db.query("INSERT INTO users (nama, email, password, role) VALUES (?, ?, ?, 'user')", [nama, email, hashedPassword], () => {
             res.json({ success: true, message: "Daftar berhasil" });
@@ -118,12 +118,18 @@ app.post('/daftar', [body('nama').trim().escape()], (req, res) => {
     });
 });
 
+// Daftar Driver
 app.post('/daftar-driver', (req, res) => {
     const { nama, email, password, no_telepon, jenis_kendaraan, merk_kendaraan, nomor_polisi } = req.body;
+    
     db.query("SELECT * FROM users WHERE email = ?", [email], async (err, results) => {
-        if (results.length > 0) return res.json({ success: false, message: "Email ada" });
+        if (results.length > 0) return res.json({ success: false, message: "Email sudah terdaftar" });
+
         const hashedPassword = await bcrypt.hash(password, 10);
-        db.query("INSERT INTO users (nama, email, password, no_telepon, role) VALUES (?, ?, ?, ?, 'driver')", [nama, email, hashedPassword, no_telepon], () => {
+        
+        db.query("INSERT INTO users (nama, email, password, no_telepon, role) VALUES (?, ?, ?, ?, 'driver')", [nama, email, hashedPassword, no_telepon], (err) => {
+            if (err) return res.json({ success: false, message: "Gagal daftar user" });
+
             db.query("INSERT INTO drivers (nama, jenis_kendaraan, merk_kendaraan, nomor_polisi, status) VALUES (?, ?, ?, ?, 'Online')", [nama, jenis_kendaraan, merk_kendaraan, nomor_polisi], () => {
                 res.json({ success: true });
             });
@@ -131,32 +137,40 @@ app.post('/daftar-driver', (req, res) => {
     });
 });
 
+// Login
 app.post('/login', loginLimiter, (req, res) => {
     const { email, password } = req.body;
     db.query("SELECT * FROM users WHERE email = ?", [email], async (err, results) => {
-        if (err || results.length === 0) return res.json({ success: false, message: "Email/Password salah" });
+        if (err || results.length === 0) return res.json({ success: false, message: "Email atau password salah" });
+
         const user = results[0];
         const isMatch = await bcrypt.compare(password, user.password);
+
         if (isMatch) {
             req.session.userId = user.id;
             req.session.role = user.role;
             return res.json({ success: true, message: "Login berhasil", role: user.role });
         }
-        return res.json({ success: false, message: "Email/Password salah" });
+        return res.json({ success: false, message: "Email atau password salah" });
     });
 });
 
-// --- API LUPA PASSWORD (MODE SIMULASI DOCKER) ---
+// Lupa Password (Simulasi Terminal)
 app.post('/api/lupa-password', (req, res) => {
     const { email } = req.body;
     db.query("SELECT * FROM users WHERE email = ?", [email], (err, results) => {
         if (results.length === 0) return res.json({ success: false, message: "Email tidak ditemukan." });
+
         const token = crypto.randomBytes(20).toString('hex');
         const expires = new Date(Date.now() + 3600000); 
+
         db.query("UPDATE users SET reset_token = ?, reset_expires = ? WHERE email = ?", [token, expires, email], (err) => {
-            // Link disesuaikan agar jalan di browser host (localhost:3000)
+            
+            // Tampilkan link di Terminal dan kirim ke Frontend
             const link = `http://localhost:3000/reset-password?token=${token}`;
-            res.json({ success: true, message: "Link reset berhasil!", resetLink: link });
+            console.log(`\n[SIMULASI] Link Reset: ${link}\n`);
+            
+            res.json({ success: true, message: "Link reset berhasil dibuat!", resetLink: link });
         });
     });
 });
@@ -165,6 +179,7 @@ app.post('/api/reset-password', async (req, res) => {
     const { token, password } = req.body;
     db.query("SELECT * FROM users WHERE reset_token = ? AND reset_expires > NOW()", [token], async (err, results) => {
         if (results.length === 0) return res.json({ success: false, message: "Token tidak valid/expired." });
+
         const hashedPassword = await bcrypt.hash(password, 10);
         db.query("UPDATE users SET password = ?, reset_token = NULL, reset_expires = NULL WHERE id = ?", [hashedPassword, results[0].id], () => {
             res.json({ success: true, message: "Password berhasil diubah." });
@@ -172,7 +187,7 @@ app.post('/api/reset-password', async (req, res) => {
     });
 });
 
-// ------------------ API USER ------------------ //
+// ------------------ API UMUM ------------------ //
 app.get('/api/user', (req, res) => {
     if (!req.session.userId) return res.json({ success: false });
     db.query("SELECT nama, email, no_telepon, role FROM users WHERE id = ?", [req.session.userId], (err, results) => res.json({ success: true, user: results[0] }));
@@ -184,7 +199,6 @@ app.post('/api/user/update', (req, res) => {
     db.query("UPDATE users SET nama = ?, email = ?, no_telepon = ? WHERE id = ?", [nama, email, no_telepon, req.session.userId], () => res.json({ success: true, message: "Updated" }));
 });
 
-// ------------------ API PESANAN ------------------ //
 app.get('/api/rute', (req, res) => {
     db.query("SELECT * FROM daftar_rute", (err, results) => res.json({ success: true, data: results }));
 });
@@ -193,10 +207,12 @@ app.get('/api/drivers', (req, res) => {
     db.query("SELECT * FROM drivers WHERE status = 'Online' ORDER BY RAND() LIMIT 3", (err, results) => res.json({ success: true, data: results }));
 });
 
+// ------------------ API PESANAN ------------------ //
 app.post('/api/pesan', (req, res) => {
     if (!req.session.userId) return res.json({ success: false, message: "Login dulu" });
     const { rute_id, jenis_layanan } = req.body;
     const userId = req.session.userId;
+
     let requiredVehicle = (jenis_layanan === 'mobil') ? 'Mobil' : 'Motor';
 
     db.query("SELECT * FROM daftar_rute WHERE id = ?", [rute_id], (err, results) => {
@@ -204,10 +220,14 @@ app.post('/api/pesan', (req, res) => {
         const rute = results[0];
         let harga = (jenis_layanan === 'motor') ? rute.harga_motor : ((jenis_layanan === 'mobil') ? rute.harga_mobil : rute.harga_barang);
 
+        // Cari Driver
         db.query("SELECT * FROM drivers WHERE jenis_kendaraan = ? AND status = 'Online' ORDER BY RAND() LIMIT 1", [requiredVehicle], (err, driverResult) => {
-            if (driverResult.length === 0) return res.json({ success: false, message: `Maaf, driver ${requiredVehicle} sibuk.` });
+            if (driverResult.length === 0) return res.json({ success: false, message: `Maaf, semua driver ${requiredVehicle} sedang sibuk.` });
+
             const driver = driverResult[0];
             const infoKendaraan = `${driver.merk_kendaraan} (${driver.nomor_polisi})`;
+
+            // Set Busy
             db.query("UPDATE drivers SET status = 'Busy' WHERE id = ?", [driver.id], () => {
                 const sql = "INSERT INTO pesanan (user_id, lokasi_jemput, tujuan, jenis_layanan, harga, status, nama_driver, info_kendaraan) VALUES (?, ?, ?, ?, ?, 'Proses', ?, ?)";
                 db.query(sql, [userId, rute.asal, rute.tujuan, jenis_layanan, harga, driver.nama, infoKendaraan], () => {
@@ -225,9 +245,11 @@ app.get('/api/riwayat', (req, res) => {
 
 app.delete('/api/riwayat/:id', (req, res) => {
     if (!req.session.userId) return res.json({ success: false });
+    
+    // Cek status
     db.query("SELECT status FROM pesanan WHERE id = ? AND user_id = ?", [req.params.id, req.session.userId], (err, results) => {
         if (results.length === 0) return res.json({ success: false, message: "Tidak ditemukan" });
-        if (results[0].status === 'Proses') return res.json({ success: false, message: "Pesanan sedang jalan!" });
+        if (results[0].status === 'Proses') return res.json({ success: false, message: "Pesanan sedang berjalan!" });
         db.query("DELETE FROM pesanan WHERE id = ?", [req.params.id], () => res.json({ success: true, message: "Dihapus" }));
     });
 });
@@ -244,11 +266,7 @@ app.get('/api/admin/data', harusLogin, harusAdmin, (req, res) => {
 app.delete('/api/admin/users/:id', harusLogin, harusAdmin, (req, res) => {
     const id = req.params.id;
     db.query("SELECT * FROM users WHERE id = ?", [id], (err, results) => {
-        if(results.length === 0) return res.json({ success: false });
-        const userToDelete = results[0];
-        if (userToDelete.role === 'driver') {
-            db.query("DELETE FROM drivers WHERE nama = ?", [userToDelete.nama]);
-        }
+        if(results[0].role === 'driver') db.query("DELETE FROM drivers WHERE nama = ?", [results[0].nama]);
         db.query("DELETE FROM pesanan WHERE user_id = ?", [id], () => {
             db.query("DELETE FROM users WHERE id = ?", [id], () => res.json({ success: true, message: "User dihapus" }));
         });
@@ -268,7 +286,7 @@ app.delete('/api/admin/drivers/:id', harusLogin, harusAdmin, (req, res) => {
 });
 
 app.put('/api/admin/users/:id/role', harusLogin, harusAdmin, (req, res) => {
-    db.query("UPDATE users SET role = ? WHERE id = ?", [req.body.role, req.params.id], () => res.json({ success: true, message: "Role updated" }));
+    db.query("UPDATE users SET role = ? WHERE id = ?", [req.body.role, req.params.id], () => res.json({ success: true }));
 });
 
 // ------------------ API DRIVER ------------------ //
@@ -299,7 +317,7 @@ app.post('/api/driver/complete', harusLogin, harusDriver, (req, res) => {
     });
 });
 
-// AUTO COMPLETE (Docker Friendly)
+// AUTO COMPLETE
 setInterval(() => {
     db.query("SELECT * FROM pesanan WHERE status = 'Proses' AND tanggal < (NOW() - INTERVAL 1 MINUTE)", (err, orders) => {
         if (orders && orders.length > 0) {
@@ -313,7 +331,6 @@ setInterval(() => {
 }, 5000);
 
 // ------------------ START SERVER ------------------ //
-// Jalankan server secara standar (tanpa module.exports)
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
 });
