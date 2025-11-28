@@ -329,4 +329,9 @@ setInterval(() => {
     });
 }, 5000);
 
-app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));
+// KODE BARU (Supaya jalan di Vercel & Localhost)
+if (require.main === module) {
+    app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));
+}
+
+module.exports = app; // untuk vercel
