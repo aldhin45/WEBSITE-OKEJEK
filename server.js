@@ -17,12 +17,12 @@ const PORT = process.env.PORT || 3000;
 const loginLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, 
     max: 100, 
-    message: { success: false, message: "Terlalu banyak percobaan." }
+    message: { success: false, message: "Terlalu banyak percobaan login." }
 });
 
-// ------------------ MIDDLEWARE UMUM (FIX PATH VERCEL) ------------------ //
-// Ganti __dirname dengan process.cwd() agar Vercel bisa baca folder public
-app.use(express.static(path.join(process.cwd(), 'public')));
+// ------------------ MIDDLEWARE UMUM ------------------ //
+// Kembalikan ke __dirname untuk Docker
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -34,23 +34,26 @@ app.use(session({
     cookie: { 
         maxAge: 24 * 60 * 60 * 1000, 
         httpOnly: true, 
-        secure: process.env.NODE_ENV === 'production' // Otomatis secure di Vercel
+        secure: false // Docker lokal biasanya HTTP (bukan HTTPS)
     } 
 }));
 
-// ------------------ KONEKSI DATABASE (FIX SSL VERCEL) ------------------ //
+// ------------------ KONEKSI DATABASE (VERSI DOCKER/LOCAL) ------------------ //
 const db = mysql.createConnection({
     host: process.env.DB_HOST || 'localhost',
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASS || '', 
     database: process.env.DB_NAME || 'okejekdb',
-    port: process.env.DB_PORT || 3306,
-    ssl: { rejectUnauthorized: false } // Wajib untuk Aiven
+    // Hapus SSL karena Docker internal network tidak butuh SSL
 });
 
 db.connect((err) => {
-    if (err) console.error("Error DB:", err);
-    else console.log("Connected to MySQL (okejekdb)");
+    if (err) {
+        console.error("Error connecting to database:", err);
+        // Jangan matikan server jika DB belum siap (biar container tidak crash loop)
+        return;
+    }
+    console.log("Connected to MySQL (okejekdb)");
 });
 
 // ------------------ MIDDLEWARE CEK ROLE ------------------ //
@@ -67,16 +70,14 @@ function harusDriver(req, res, next) {
     next();
 }
 
-// ------------------ ROUTE HALAMAN (FIX PATH VERCEL) ------------------ //
-// Gunakan process.cwd() untuk mencari folder views
-
+// ------------------ ROUTE HALAMAN (KEMBALI KE __DIRNAME) ------------------ //
 function cekRedirect(req, res, file) {
     if (req.session.userId) {
         if (req.session.role === 'admin') return res.redirect('/admin');
         if (req.session.role === 'driver') return res.redirect('/driver-dashboard');
         return res.redirect('/home');
     }
-    res.sendFile(path.join(process.cwd(), file));
+    res.sendFile(path.join(__dirname, file));
 }
 
 app.get('/', (req, res) => cekRedirect(req, res, 'views/index.html'));
@@ -84,24 +85,27 @@ app.get('/login', (req, res) => cekRedirect(req, res, 'views/login.html'));
 app.get('/daftar', (req, res) => cekRedirect(req, res, 'views/daftar.html'));
 app.get('/daftar-driver', (req, res) => cekRedirect(req, res, 'views/daftar-driver.html'));
 
-app.get('/lupa-password', (req, res) => res.sendFile(path.join(process.cwd(), 'views', 'lupa-password.html')));
-app.get('/reset-password', (req, res) => res.sendFile(path.join(process.cwd(), 'views', 'reset-password.html')));
+// Halaman Tambahan
+app.get('/lupa-password', (req, res) => res.sendFile(path.join(__dirname, 'views', 'lupa-password.html')));
+app.get('/reset-password', (req, res) => res.sendFile(path.join(__dirname, 'views', 'reset-password.html')));
 
-app.get('/home', harusLogin, (req, res) => res.sendFile(path.join(process.cwd(), 'views', 'home.html')));
-app.get('/konfirmasi', harusLogin, (req, res) => res.sendFile(path.join(process.cwd(), 'views', 'konfirmasi.html')));
-app.get('/edit-profil', harusLogin, (req, res) => res.sendFile(path.join(process.cwd(), 'views', 'edit-profil.html')));
-app.get('/pesan', harusLogin, (req, res) => res.sendFile(path.join(process.cwd(), 'views', 'pesan.html')));
-app.get('/riwayat', harusLogin, (req, res) => res.sendFile(path.join(process.cwd(), 'views', 'riwayat.html')));
-app.get('/profil', harusLogin, (req, res) => res.sendFile(path.join(process.cwd(), 'views', 'profil.html')));
-app.get('/admin', harusLogin, harusAdmin, (req, res) => res.sendFile(path.join(process.cwd(), 'views', 'admin.html')));
-app.get('/driver-dashboard', harusLogin, harusDriver, (req, res) => res.sendFile(path.join(process.cwd(), 'views', 'driver.html')));
+// Halaman User
+app.get('/home', harusLogin, (req, res) => res.sendFile(path.join(__dirname, 'views', 'home.html')));
+app.get('/konfirmasi', harusLogin, (req, res) => res.sendFile(path.join(__dirname, 'views', 'konfirmasi.html')));
+app.get('/edit-profil', harusLogin, (req, res) => res.sendFile(path.join(__dirname, 'views', 'edit-profil.html')));
+app.get('/pesan', harusLogin, (req, res) => res.sendFile(path.join(__dirname, 'views', 'pesan.html')));
+app.get('/riwayat', harusLogin, (req, res) => res.sendFile(path.join(__dirname, 'views', 'riwayat.html')));
+app.get('/profil', harusLogin, (req, res) => res.sendFile(path.join(__dirname, 'views', 'profil.html')));
+
+// Halaman Khusus
+app.get('/admin', harusLogin, harusAdmin, (req, res) => res.sendFile(path.join(__dirname, 'views', 'admin.html')));
+app.get('/driver-dashboard', harusLogin, harusDriver, (req, res) => res.sendFile(path.join(__dirname, 'views', 'driver.html')));
 
 app.get('/keluar', (req, res) => {
     req.session.destroy(() => res.redirect('/'));
 });
 
-// ------------------ API (TETAP SAMA SEPERTI SEBELUMNYA) ------------------ //
-// (Saya singkat agar muat, isinya sama persis dengan logika final sebelumnya)
+// ------------------ API AUTH ------------------ //
 
 app.post('/daftar', [body('nama').trim().escape()], (req, res) => {
     const { nama, email, password } = req.body;
@@ -142,6 +146,7 @@ app.post('/login', loginLimiter, (req, res) => {
     });
 });
 
+// --- API LUPA PASSWORD (MODE SIMULASI DOCKER) ---
 app.post('/api/lupa-password', (req, res) => {
     const { email } = req.body;
     db.query("SELECT * FROM users WHERE email = ?", [email], (err, results) => {
@@ -149,7 +154,8 @@ app.post('/api/lupa-password', (req, res) => {
         const token = crypto.randomBytes(20).toString('hex');
         const expires = new Date(Date.now() + 3600000); 
         db.query("UPDATE users SET reset_token = ?, reset_expires = ? WHERE email = ?", [token, expires, email], (err) => {
-            const link = `https://${req.get('host')}/reset-password?token=${token}`; // LINK DINAMIS (BISA LOCALHOST / VERCEL)
+            // Link disesuaikan agar jalan di browser host (localhost:3000)
+            const link = `http://localhost:3000/reset-password?token=${token}`;
             res.json({ success: true, message: "Link reset berhasil!", resetLink: link });
         });
     });
@@ -166,6 +172,7 @@ app.post('/api/reset-password', async (req, res) => {
     });
 });
 
+// ------------------ API USER ------------------ //
 app.get('/api/user', (req, res) => {
     if (!req.session.userId) return res.json({ success: false });
     db.query("SELECT nama, email, no_telepon, role FROM users WHERE id = ?", [req.session.userId], (err, results) => res.json({ success: true, user: results[0] }));
@@ -177,6 +184,7 @@ app.post('/api/user/update', (req, res) => {
     db.query("UPDATE users SET nama = ?, email = ?, no_telepon = ? WHERE id = ?", [nama, email, no_telepon, req.session.userId], () => res.json({ success: true, message: "Updated" }));
 });
 
+// ------------------ API PESANAN ------------------ //
 app.get('/api/rute', (req, res) => {
     db.query("SELECT * FROM daftar_rute", (err, results) => res.json({ success: true, data: results }));
 });
@@ -220,10 +228,11 @@ app.delete('/api/riwayat/:id', (req, res) => {
     db.query("SELECT status FROM pesanan WHERE id = ? AND user_id = ?", [req.params.id, req.session.userId], (err, results) => {
         if (results.length === 0) return res.json({ success: false, message: "Tidak ditemukan" });
         if (results[0].status === 'Proses') return res.json({ success: false, message: "Pesanan sedang jalan!" });
-        db.query("DELETE FROM pesanan WHERE id = ?", [req.params.id], () => res.json({ success: true }));
+        db.query("DELETE FROM pesanan WHERE id = ?", [req.params.id], () => res.json({ success: true, message: "Dihapus" }));
     });
 });
 
+// ------------------ API ADMIN ------------------ //
 app.get('/api/admin/data', harusLogin, harusAdmin, (req, res) => {
     db.query("SELECT * FROM pesanan ORDER BY id DESC", (err, pesanan) => {
         db.query("SELECT * FROM users ORDER BY id DESC", (err, users) => {
@@ -235,9 +244,13 @@ app.get('/api/admin/data', harusLogin, harusAdmin, (req, res) => {
 app.delete('/api/admin/users/:id', harusLogin, harusAdmin, (req, res) => {
     const id = req.params.id;
     db.query("SELECT * FROM users WHERE id = ?", [id], (err, results) => {
-        if(results[0].role === 'driver') db.query("DELETE FROM drivers WHERE nama = ?", [results[0].nama]);
+        if(results.length === 0) return res.json({ success: false });
+        const userToDelete = results[0];
+        if (userToDelete.role === 'driver') {
+            db.query("DELETE FROM drivers WHERE nama = ?", [userToDelete.nama]);
+        }
         db.query("DELETE FROM pesanan WHERE user_id = ?", [id], () => {
-            db.query("DELETE FROM users WHERE id = ?", [id], () => res.json({ success: true }));
+            db.query("DELETE FROM users WHERE id = ?", [id], () => res.json({ success: true, message: "User dihapus" }));
         });
     });
 });
@@ -255,9 +268,10 @@ app.delete('/api/admin/drivers/:id', harusLogin, harusAdmin, (req, res) => {
 });
 
 app.put('/api/admin/users/:id/role', harusLogin, harusAdmin, (req, res) => {
-    db.query("UPDATE users SET role = ? WHERE id = ?", [req.body.role, req.params.id], () => res.json({ success: true }));
+    db.query("UPDATE users SET role = ? WHERE id = ?", [req.body.role, req.params.id], () => res.json({ success: true, message: "Role updated" }));
 });
 
+// ------------------ API DRIVER ------------------ //
 app.get('/api/driver/data', harusLogin, harusDriver, (req, res) => {
     const userId = req.session.userId;
     db.query("SELECT nama, email FROM users WHERE id = ?", [userId], (err, uRes) => {
@@ -285,6 +299,7 @@ app.post('/api/driver/complete', harusLogin, harusDriver, (req, res) => {
     });
 });
 
+// AUTO COMPLETE (Docker Friendly)
 setInterval(() => {
     db.query("SELECT * FROM pesanan WHERE status = 'Proses' AND tanggal < (NOW() - INTERVAL 1 MINUTE)", (err, orders) => {
         if (orders && orders.length > 0) {
@@ -297,8 +312,8 @@ setInterval(() => {
     });
 }, 5000);
 
-// --- WAJIB UNTUK VERCEL ---
-if (require.main === module) {
-    app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));
-}
-module.exports = app;
+// ------------------ START SERVER ------------------ //
+// Jalankan server secara standar (tanpa module.exports)
+app.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}`);
+});
