@@ -143,23 +143,29 @@
             } catch (err) { console.error(err); }
         }
 
-        async function selesaikanPesanan(id) {
-            if(!confirm("Sudah mengantar penumpang sampai tujuan?")) return;
+        // Di dalam views/driver.html (Bagian script)
+    async function selesaikanPesanan(id) {
+    if(!confirm("Sudah mengantar penumpang sampai tujuan?")) return;
 
-            const response = await fetch('/api/driver/complete', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ pesanan_id: id })
-            });
-            
-            const result = await response.json();
-            if(result.success) {
-                alert("Pekerjaan Selesai! Saldo bertambah.");
-                loadDriverData();
-            } else {
-                alert("Gagal update status.");
-            }
+    try {
+        const response = await fetch('/api/driver/complete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ pesanan_id: id })
+        });
+        
+        const result = await response.json();
+        if(result.success) {
+            alert(result.message);
+            loadDriverData(); // Refresh halaman agar kotak orderan hilang
+        } else {
+            alert("Gagal: " + result.message);
         }
+    } catch (error) {
+        console.error(error);
+        alert("Gagal koneksi server.");
+    }
+}
 
         loadDriverData();
         setInterval(loadDriverData, 10000);

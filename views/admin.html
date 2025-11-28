@@ -72,18 +72,11 @@
             document.getElementById('btn-' + sectionId).classList.add('active');
         }
 
-        // --- FUNGSI PEMBERSIH XSS (Output Escaping) ---
-        // Mengubah karakter berbahaya menjadi kode aman HTML
+        // --- FUNGSI PEMBERSIH XSS ---
         function escapeHTML(str) {
             if (!str) return "";
             return String(str).replace(/[&<>"']/g, function(match) {
-                const escape = {
-                    '&': '&amp;',
-                    '<': '&lt;',
-                    '>': '&gt;',
-                    '"': '&quot;',
-                    "'": '&#39;'
-                };
+                const escape = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
                 return escape[match];
             });
         }
@@ -100,10 +93,18 @@
                     document.getElementById('totalPesanan').textContent = data.pesanan.length;
                     document.getElementById('totalUser').textContent = data.users.length;
                     document.getElementById('totalDriver').textContent = data.drivers.length;
-                    const omset = data.pesanan.reduce((acc, curr) => acc + curr.harga, 0);
+                    
+                    // --- PERBAIKAN LOGIKA OMSET ---
+                    const omset = data.pesanan
+                        .filter(p => p.status === 'Selesai') // Hanya hitung yang selesai
+                        .reduce((acc, curr) => {
+                            const harga = parseFloat(curr.harga); // Pastikan dikonversi ke angka
+                            return acc + (isNaN(harga) ? 0 : harga);
+                        }, 0);
+                    
                     document.getElementById('totalOmset').textContent = formatRupiah(omset);
 
-                    // TABEL PESANAN (Gunakan escapeHTML)
+                    // TABEL PESANAN
                     const tPesanan = document.getElementById('tablePesanan');
                     tPesanan.innerHTML = '';
                     data.pesanan.forEach(p => {
@@ -121,7 +122,7 @@
                             </tr>`;
                     });
 
-                    // TABEL USERS (Gunakan escapeHTML)
+                    // TABEL USERS
                     const tUsers = document.getElementById('tableUsers');
                     tUsers.innerHTML = '';
                     data.users.forEach(u => {
@@ -141,7 +142,7 @@
                             </tr>`;
                     });
 
-                    // TABEL DRIVER (Gunakan escapeHTML)
+                    // TABEL DRIVER
                     const tDrivers = document.getElementById('tableDrivers');
                     tDrivers.innerHTML = '';
                     data.drivers.forEach(d => {
@@ -162,22 +163,15 @@
 
         async function hapusData(type, id) {
             if(!confirm("Yakin ingin menghapus data ini secara permanen?")) return;
-
             const response = await fetch(`/api/admin/${type}/${id}`, { method: 'DELETE' });
             const result = await response.json();
-            
-            if(result.success) {
-                alert(result.message);
-                loadAdminData();
-            } else {
-                alert("Gagal: " + result.message);
-            }
+            if(result.success) { alert(result.message); loadAdminData(); } 
+            else { alert("Gagal: " + result.message); }
         }
 
         async function ubahRole(id, currentRole) {
             const newRole = prompt("Masukkan Role Baru (admin / user / driver):", currentRole);
             if(!newRole || newRole === currentRole) return;
-
             if(['admin', 'user', 'driver'].includes(newRole.toLowerCase())) {
                 const response = await fetch(`/api/admin/users/${id}/role`, {
                     method: 'PUT',
@@ -185,13 +179,8 @@
                     body: JSON.stringify({ role: newRole.toLowerCase() })
                 });
                 const result = await response.json();
-                if(result.success) {
-                    alert("Role berhasil diubah!");
-                    loadAdminData();
-                }
-            } else {
-                alert("Role tidak valid! Gunakan: admin, user, atau driver.");
-            }
+                if(result.success) { alert("Role berhasil diubah!"); loadAdminData(); }
+            } else { alert("Role tidak valid!"); }
         }
 
         loadAdminData();
