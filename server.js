@@ -13,15 +13,14 @@ const { body, validationResult } = require('express-validator');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ------------------ MIDDLEWARE KEAMANAN ------------------ //
+// MIDDLEWARE KEAMANAN  //
 const loginLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, 
-    max: 100, // Dilonggarkan untuk development
+    max: 100, 
     message: { success: false, message: "Terlalu banyak percobaan login." }
 });
 
-// ------------------ MIDDLEWARE UMUM ------------------ //
-// Kembali menggunakan __dirname (Standar Node.js Lokal)
+// MIDDLEWARE UMUM //
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -34,15 +33,15 @@ app.use(session({
     cookie: { 
         maxAge: 24 * 60 * 60 * 1000, 
         httpOnly: true, 
-        secure: false // False karena di localhost kita pakai HTTP biasa
+        secure: false 
     } 
 }));
 
-// ------------------ KONEKSI DATABASE (LOKAL / LARAGON) ------------------ //
+//  KONEKSI DATABASE LOKAL //
 const db = mysql.createConnection({
     host: process.env.DB_HOST || 'localhost',
     user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASS || '', // Sesuai settingan Laragon Anda
+    password: process.env.DB_PASS || '', 
     database: process.env.DB_NAME || 'okejekdb'
 });
 
@@ -54,7 +53,7 @@ db.connect((err) => {
     console.log("Berhasil terhubung ke MySQL (Localhost)");
 });
 
-// ------------------ MIDDLEWARE CEK ROLE ------------------ //
+// MIDDLEWARE CEK ROLE //
 function harusLogin(req, res, next) {
     if (!req.session.userId) return res.redirect('/login');
     next();
@@ -68,7 +67,7 @@ function harusDriver(req, res, next) {
     next();
 }
 
-// ------------------ ROUTE HALAMAN (VIEW) ------------------ //
+// ROUTE HALAMAN (VIEW)  //
 
 function cekRedirect(req, res, file) {
     if (req.session.userId) {
@@ -103,7 +102,7 @@ app.get('/keluar', (req, res) => {
     req.session.destroy(() => res.redirect('/'));
 });
 
-// ------------------ API AUTHENTICATION ------------------ //
+// API AUTHENTICATION //
 
 // Daftar User Biasa
 app.post('/daftar', [body('nama').trim().escape()], (req, res) => {
@@ -155,7 +154,7 @@ app.post('/login', loginLimiter, (req, res) => {
     });
 });
 
-// Lupa Password (Simulasi Terminal)
+// Lupa Password contoh sederhana pake terminal
 app.post('/api/lupa-password', (req, res) => {
     const { email } = req.body;
     db.query("SELECT * FROM users WHERE email = ?", [email], (err, results) => {
@@ -187,7 +186,7 @@ app.post('/api/reset-password', async (req, res) => {
     });
 });
 
-// ------------------ API UMUM ------------------ //
+// API UMUM  //
 app.get('/api/user', (req, res) => {
     if (!req.session.userId) return res.json({ success: false });
     db.query("SELECT nama, email, no_telepon, role FROM users WHERE id = ?", [req.session.userId], (err, results) => res.json({ success: true, user: results[0] }));
@@ -207,7 +206,7 @@ app.get('/api/drivers', (req, res) => {
     db.query("SELECT * FROM drivers WHERE status = 'Online' ORDER BY RAND() LIMIT 3", (err, results) => res.json({ success: true, data: results }));
 });
 
-// ------------------ API PESANAN ------------------ //
+//  API PESANAN //
 app.post('/api/pesan', (req, res) => {
     if (!req.session.userId) return res.json({ success: false, message: "Login dulu" });
     const { rute_id, jenis_layanan } = req.body;
@@ -254,7 +253,7 @@ app.delete('/api/riwayat/:id', (req, res) => {
     });
 });
 
-// ------------------ API ADMIN ------------------ //
+//  API ADMIN //
 app.get('/api/admin/data', harusLogin, harusAdmin, (req, res) => {
     db.query("SELECT * FROM pesanan ORDER BY id DESC", (err, pesanan) => {
         db.query("SELECT * FROM users ORDER BY id DESC", (err, users) => {
@@ -289,7 +288,7 @@ app.put('/api/admin/users/:id/role', harusLogin, harusAdmin, (req, res) => {
     db.query("UPDATE users SET role = ? WHERE id = ?", [req.body.role, req.params.id], () => res.json({ success: true }));
 });
 
-// ------------------ API DRIVER ------------------ //
+//  API DRIVER  //
 app.get('/api/driver/data', harusLogin, harusDriver, (req, res) => {
     const userId = req.session.userId;
     db.query("SELECT nama, email FROM users WHERE id = ?", [userId], (err, uRes) => {
@@ -330,7 +329,7 @@ setInterval(() => {
     });
 }, 5000);
 
-// ------------------ START SERVER ------------------ //
+//  START SERVER  //
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
 });

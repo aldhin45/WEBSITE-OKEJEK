@@ -12,7 +12,6 @@
   <link rel="stylesheet" href="/css/style.css" />
   
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 <body>
   <header class="nav">
@@ -124,81 +123,9 @@
     </div>
   </footer>
 
-  <script src="/js/app.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   
-  <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
+  <script src="/js/home.js"></script>
 
-    // 1. LOGIKA RUTE & HARGA
-    let dataRute = [];
-    async function loadRute() {
-        try {
-            const response = await fetch('/api/rute');
-            const result = await response.json();
-            const select = document.getElementById('rute_id');
-            if (result.success) {
-                dataRute = result.data;
-                select.innerHTML = '<option value="">-- Pilih Lokasi --</option>';
-                dataRute.forEach(rute => {
-                    const option = document.createElement('option');
-                    option.value = rute.id;
-                    option.textContent = `${rute.asal} ➝ ${rute.tujuan}`;
-                    select.appendChild(option);
-                });
-            }
-        } catch (error) {}
-    }
-
-    function updateHarga() {
-        const ruteId = document.getElementById('rute_id').value;
-        const layanan = document.getElementById('service').value;
-        const display = document.getElementById('priceDisplay');
-        if (!ruteId) { display.textContent = "Rp 0"; return; }
-        const rute = dataRute.find(r => r.id == ruteId);
-        if (rute) {
-            let harga = (layanan === 'motor') ? rute.harga_motor : (layanan.includes('mobil') ? rute.harga_mobil : rute.harga_barang);
-            display.textContent = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(harga);
-        }
-    }
-    document.getElementById('rute_id').addEventListener('change', updateHarga);
-    document.getElementById('service').addEventListener('change', updateHarga);
-    loadRute();
-
-    // 2. LOAD DRIVER DARI DATABASE
-    async function loadDrivers() {
-        try {
-            const response = await fetch('/api/drivers');
-            const result = await response.json();
-            const container = document.getElementById('driverGrid');
-            
-            if (result.success && result.data.length > 0) {
-                container.innerHTML = '';
-                result.data.forEach(driver => {
-                    const initials = driver.nama.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-                    const jarak = (Math.random() * 3 + 0.5).toFixed(1); 
-                    const kendaraan = Math.random() > 0.5 ? 'Motor' : 'Mobil';
-
-                    const div = document.createElement('div');
-                    div.className = 'driver';
-                    div.innerHTML = `
-                        <div class="avatar">${initials}</div>
-                        <div class="info">
-                            <strong>${driver.nama}</strong>
-                            <span>${kendaraan} • ${jarak} km</span>
-                        </div>
-                        <div class="status">Online</div>
-                    `;
-                    container.appendChild(div);
-                });
-            }
-        } catch (error) {}
-    }
-    loadDrivers();
-
-    // 3. PETA (Leaflet)
-    const map = L.map('map').setView([-7.4234, 109.2478], 15);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
-    L.marker([-7.4234, 109.2478]).addTo(map).bindPopup('<b>Pusat Oke-Jek</b>').openPopup();
-  </script>
 </body>
 </html>

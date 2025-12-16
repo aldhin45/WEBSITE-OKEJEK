@@ -39,40 +39,7 @@
     <p>© <span id="year"></span> Oke-Jek</p>
   </footer>
 
-  <script>
-    document.getElementById("year").textContent = new Date().getFullYear();
-
-    fetch('/api/user') 
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          // 1. Isi Nama & Email
-          document.getElementById("nama").textContent = data.user.nama;
-          document.getElementById("email").textContent = data.user.email;
-          
-          // 2. Isi Nomor Telepon (Cek jika kosong)
-          const phoneElement = document.getElementById("phone");
-          if (data.user.no_telepon) {
-              phoneElement.textContent = data.user.no_telepon;
-          } else {
-              phoneElement.textContent = "-";
-          }
-
-          // 3. Buat Avatar (Huruf Depan)
-          if (data.user.nama) {
-            const firstLetter = data.user.nama.charAt(0).toUpperCase();
-            document.getElementById("avatar").textContent = firstLetter;
-          }
-        } else {
-          alert("Sesi Anda telah berakhir. Silakan login kembali.");
-          window.location.href = "/login";
-        }
-      })
-      .catch(error => {
-        console.error("Error:", error);
-        document.getElementById("nama").textContent = "Gagal memuat";
-      });
-  </script>
+  <script src="/js/profil.js"></script>
 
 </body>
 </html>

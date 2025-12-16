@@ -35,45 +35,7 @@
     </form>
   </div>
 
-  <script>
-    document.getElementById("daftarForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      
-      const btn = document.getElementById("btnSubmit");
-      btn.textContent = "Memproses...";
-      btn.disabled = true;
-
-      const data = {
-          nama: document.getElementById('nama').value,
-          email: document.getElementById('email').value,
-          password: document.getElementById('password').value
-      };
-
-      try {
-        const response = await fetch("/daftar", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data)
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-            alert("Pendaftaran Berhasil! Silakan Login.");
-            window.location.href = "/login";
-        } else {
-            alert(result.message);
-            btn.textContent = "Daftar Sekarang";
-            btn.disabled = false;
-        }
-      } catch (error) {
-        console.error("Error:", error);
-        alert("Gagal menghubungi server");
-        btn.textContent = "Daftar Sekarang";
-        btn.disabled = false;
-      }
-    });
-  </script>
+  <script src="/js/daftar.js"></script>
 
 </body>
 </html>

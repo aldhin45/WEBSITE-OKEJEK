@@ -38,7 +38,7 @@
             <h2>Pekerjaan Aktif</h2>
             <div id="activeJobContainer">
                 <div style="text-align:center; padding: 40px; background:white; border-radius:12px; color:#888;">
-                    <p>Belum ada pesanan masuk. Standby ya!</p>
+                    <p>Memuat data...</p>
                 </div>
             </div>
         </div>
@@ -57,7 +57,7 @@
                         </tr>
                     </thead>
                     <tbody id="tableRiwayat">
-                        <tr><td colspan="5">Memuat...</td></tr>
+                        <tr><td colspan="5" style="text-align:center;">Memuat...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -69,7 +69,9 @@
                 <h3 style="margin-bottom:20px;">Informasi Akun</h3>
                 <p style="font-size:1rem; margin:5px 0;">Nama: <strong id="profNama">-</strong></p>
                 <p style="font-size:1rem; margin:5px 0;">Email: <strong id="profEmail">-</strong></p>
+                
                 <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+                
                 <h3 style="margin-top:20px;">Informasi Kendaraan</h3>
                 <p style="font-size:1rem; margin:5px 0;">Kendaraan: <strong id="profMerk">-</strong></p>
                 <p style="font-size:1rem; margin:5px 0;">Plat Nomor: <strong id="profPlat">-</strong></p>
@@ -79,96 +81,7 @@
 
     </div>
 
-    <script>
-        function showSection(sectionId) {
-            document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
-            document.getElementById(sectionId).classList.add('active');
-            document.getElementById('btn-' + sectionId).classList.add('active');
-        }
+    <script src="/js/driver.js"></script>
 
-        const formatRupiah = (num) => 'Rp ' + num.toLocaleString('id-ID');
-
-        async function loadDriverData() {
-            try {
-                const response = await fetch('/api/driver/data');
-                const data = await response.json();
-
-                if(data.success) {
-                    // UPDATE STATISTIK & PROFIL
-                    document.getElementById('totalPendapatan').textContent = formatRupiah(data.pendapatan);
-                    document.getElementById('totalOrder').textContent = data.riwayat.length;
-                    document.getElementById('profNama').textContent = data.profil.nama;
-                    document.getElementById('profEmail').textContent = data.profil.email;
-                    document.getElementById('profMerk').textContent = data.profil.merk_kendaraan || '-';
-                    document.getElementById('profPlat').textContent = data.profil.nomor_polisi || '-';
-
-                    // UPDATE PEKERJAAN AKTIF
-                    const jobContainer = document.getElementById('activeJobContainer');
-                    if (data.pesananAktif.length > 0) {
-                        const job = data.pesananAktif[0];
-                        jobContainer.innerHTML = `
-                            <div class="job-card">
-                                <h2>🔔 Orderan Masuk!</h2>
-                                <p>Layanan: <strong>${job.jenis_layanan}</strong></p>
-                                <div class="job-route">
-                                    ${job.lokasi_jemput} ➝ ${job.tujuan}
-                                </div>
-                                <p style="font-size: 1.5rem; color: #ffcc00;">${formatRupiah(job.harga)}</p>
-                                <button class="btn-finish" onclick="selesaikanPesanan(${job.id})">✅ Selesaikan Pesanan</button>
-                            </div>
-                        `;
-                    } else {
-                        jobContainer.innerHTML = `
-                            <div style="text-align:center; padding: 40px; background:white; border-radius:12px; color:#888;">
-                                <h3>Tidak ada pesanan aktif</h3>
-                                <p>Menunggu pesanan masuk...</p>
-                            </div>`;
-                    }
-
-                    // UPDATE TABEL RIWAYAT
-                    const tbody = document.getElementById('tableRiwayat');
-                    tbody.innerHTML = '';
-                    data.riwayat.forEach(p => {
-                        tbody.innerHTML += `
-                            <tr>
-                                <td>#${p.id}</td>
-                                <td>${p.lokasi_jemput} ➝ ${p.tujuan}</td>
-                                <td>${p.jenis_layanan}</td>
-                                <td>${formatRupiah(p.harga)}</td>
-                                <td><span class="badge">Selesai</span></td>
-                            </tr>`;
-                    });
-                }
-            } catch (err) { console.error(err); }
-        }
-
-        // Di dalam views/driver.html (Bagian script)
-    async function selesaikanPesanan(id) {
-    if(!confirm("Sudah mengantar penumpang sampai tujuan?")) return;
-
-    try {
-        const response = await fetch('/api/driver/complete', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ pesanan_id: id })
-        });
-        
-        const result = await response.json();
-        if(result.success) {
-            alert(result.message);
-            loadDriverData(); // Refresh halaman agar kotak orderan hilang
-        } else {
-            alert("Gagal: " + result.message);
-        }
-    } catch (error) {
-        console.error(error);
-        alert("Gagal koneksi server.");
-    }
-}
-
-        loadDriverData();
-        setInterval(loadDriverData, 10000);
-    </script>
 </body>
 </html>

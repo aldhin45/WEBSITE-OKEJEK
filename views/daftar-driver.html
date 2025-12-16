@@ -57,47 +57,7 @@
     </form>
   </div>
 
-  <script>
-    document.getElementById("driverForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const btn = document.getElementById("btnSubmit");
-      btn.textContent = "Memproses...";
-      btn.disabled = true;
+  <script src="/js/daftar-driver.js"></script>
 
-      const data = {
-          nama: document.getElementById('nama').value,
-          email: document.getElementById('email').value,
-          password: document.getElementById('password').value,
-          no_telepon: document.getElementById('no_telepon').value,
-          jenis_kendaraan: document.getElementById('jenis_kendaraan').value,
-          merk_kendaraan: document.getElementById('merk_kendaraan').value,
-          nomor_polisi: document.getElementById('nomor_polisi').value
-      };
-
-      try {
-        const response = await fetch("/daftar-driver", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data)
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-            alert("Pendaftaran Berhasil! Silakan Login.");
-            window.location.href = "/login";
-        } else {
-            alert(result.message);
-            btn.textContent = "Daftar Sekarang";
-            btn.disabled = false;
-        }
-      } catch (error) {
-        console.error(error);
-        alert("Gagal menghubungi server");
-        btn.textContent = "Daftar Sekarang";
-        btn.disabled = false;
-      }
-    });
-  </script>
 </body>
 </html>

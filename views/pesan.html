@@ -25,12 +25,12 @@
     
     <form class="order-form" id="formPesan">
       
-      <label>Pilih Rute Perjalanan</label>
+      <label for="rute_id">Pilih Rute Perjalanan</label>
       <select id="rute_id" required>
-        <option value="">-- Pilih Lokasi Jemput & Tujuan --</option>
-        </select>
+        <option value="">-- Sedang memuat rute... --</option>
+      </select>
 
-      <label>Pilih Layanan</label>
+      <label for="jenis_layanan">Pilih Layanan</label>
       <select id="jenis_layanan" required>
         <option value="motor">Ojek Motor</option>
         <option value="mobil">Ojek Mobil</option>
@@ -49,93 +49,7 @@
     <p>© <span id="year"></span> Oke-Jek</p>
   </footer>
 
-  <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
+  <script src="/js/pesan.js"></script>
 
-    let dataRute = []; // Variabel untuk menyimpan data rute dari server
-
-    // 1. AMBIL DAFTAR RUTE SAAT HALAMAN DIBUKA
-    async function loadRute() {
-        try {
-            const response = await fetch('/api/rute');
-            const result = await response.json();
-
-            if (result.success) {
-                dataRute = result.data; // Simpan ke variabel global
-                const select = document.getElementById('rute_id');
-
-                dataRute.forEach(rute => {
-                    const option = document.createElement('option');
-                    option.value = rute.id;
-                    option.textContent = `${rute.asal} ➝ ${rute.tujuan} (${rute.jarak_km} km)`;
-                    select.appendChild(option);
-                });
-            }
-        } catch (error) {
-            console.error("Gagal memuat rute");
-        }
-    }
-
-    // 2. FUNGSI UPDATE HARGA OTOMATIS (Realtime)
-    function updateHarga() {
-        const ruteId = document.getElementById('rute_id').value;
-        const layanan = document.getElementById('jenis_layanan').value;
-        const displayHarga = document.getElementById('estimasiHarga');
-
-        if (!ruteId) {
-            displayHarga.textContent = "Rp 0";
-            return;
-        }
-
-        // Cari data rute yang dipilih
-        const ruteTerpilih = dataRute.find(r => r.id == ruteId);
-        
-        if (ruteTerpilih) {
-            let harga = 0;
-            if (layanan === 'motor') harga = ruteTerpilih.harga_motor;
-            else if (layanan === 'mobil') harga = ruteTerpilih.harga_mobil;
-            else if (layanan === 'barang') harga = ruteTerpilih.harga_barang;
-
-            // Format Rupiah
-            displayHarga.textContent = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(harga);
-        }
-    }
-
-    // Pasang Event Listener agar harga berubah saat pilihan diganti
-    document.getElementById('rute_id').addEventListener('change', updateHarga);
-    document.getElementById('jenis_layanan').addEventListener('change', updateHarga);
-
-
-    // 3. KIRIM PESANAN KE SERVER
-    const form = document.getElementById('formPesan');
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        const rute_id = document.getElementById('rute_id').value;
-        const jenis_layanan = document.getElementById('jenis_layanan').value;
-
-        try {
-            const response = await fetch('/api/pesan', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ rute_id, jenis_layanan })
-            });
-
-            const result = await response.json();
-
-            if (result.success) {
-                alert("Pesanan Berhasil Dibuat!");
-                window.location.href = '/riwayat'; 
-            } else {
-                alert("Gagal: " + result.message);
-            }
-
-        } catch (error) {
-            alert("Terjadi kesalahan koneksi.");
-        }
-    });
-
-    loadRute();
-  </script>
 </body>
 </html>

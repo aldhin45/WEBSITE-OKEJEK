@@ -67,63 +67,7 @@
     <p>© <span id="year"></span> Oke-Jek</p>
   </footer>
 
-  <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
+  <script src="/js/beranda.js"></script>
 
-    // 1. LOAD NAMA USER
-    async function loadUserName() {
-        try {
-            const response = await fetch('/api/user');
-            const data = await response.json();
-            if (data.success) {
-                document.getElementById('username').textContent = data.user.nama;
-            }
-        } catch (error) {
-            console.error("Gagal ambil user");
-        }
-    }
-
-    // 2. LOAD DRIVER AKTIF DARI DATABASE (UPDATE)
-    async function loadDrivers() {
-        try {
-            const response = await fetch('/api/drivers');
-            const result = await response.json();
-            const container = document.getElementById('driverContainer');
-            
-            if (result.success && result.data.length > 0) {
-                container.innerHTML = ''; 
-
-                result.data.forEach(driver => {
-                    const initials = driver.nama.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-                    
-                    // Hitung jarak acak untuk tampilan
-                    const jarak = (Math.random() * 3 + 0.5).toFixed(1); 
-
-                    const div = document.createElement('div');
-                    div.classList.add('driver');
-                    div.innerHTML = `
-                        <div class="avatar">${initials}</div>
-                        <div class="info">
-                            <strong>${driver.nama}</strong>
-                            <span style="font-size: 0.85rem; color: #ccc;">
-                                ${driver.merk_kendaraan} • ${driver.nomor_polisi}
-                            </span>
-                            <span style="font-size: 0.8rem; color: #00e08f;">
-                                ${jarak} km
-                            </span>
-                        </div>
-                        <div class="status online">Online</div>
-                    `;
-                    container.appendChild(div);
-                });
-            }
-        } catch (error) {
-            console.error("Gagal ambil driver");
-        }
-    }
-
-    loadUserName();
-    loadDrivers();
-  </script>
 </body>
 </html>

@@ -24,7 +24,10 @@
                 <div class="stat-card"><h3>Total Pesanan</h3><p id="totalPesanan">0</p></div>
                 <div class="stat-card"><h3>Total Pengguna</h3><p id="totalUser">0</p></div>
                 <div class="stat-card"><h3>Total Driver</h3><p id="totalDriver">0</p></div>
-                <div class="stat-card" style="border-left: 5px solid #00e08f;"><h3>Estimasi Omset</h3><p id="totalOmset" style="color:#00e08f;">Rp 0</p></div>
+                <div class="stat-card" style="border-left: 5px solid #00e08f;">
+                    <h3>Estimasi Omset</h3>
+                    <p id="totalOmset" style="color:#00e08f;">Rp 0</p>
+                </div>
             </div>
 
             <h3>Pesanan Terbaru</h3>
@@ -64,126 +67,7 @@
 
     </div>
 
-    <script>
-        function showSection(sectionId) {
-            document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
-            document.getElementById(sectionId).classList.add('active');
-            document.getElementById('btn-' + sectionId).classList.add('active');
-        }
+    <script src="/js/admin.js"></script>
 
-        // --- FUNGSI PEMBERSIH XSS ---
-        function escapeHTML(str) {
-            if (!str) return "";
-            return String(str).replace(/[&<>"']/g, function(match) {
-                const escape = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
-                return escape[match];
-            });
-        }
-
-        const formatRupiah = (num) => 'Rp ' + num.toLocaleString('id-ID');
-
-        async function loadAdminData() {
-            try {
-                const response = await fetch('/api/admin/data');
-                const data = await response.json();
-
-                if(data.success) {
-                    // STATISTIK
-                    document.getElementById('totalPesanan').textContent = data.pesanan.length;
-                    document.getElementById('totalUser').textContent = data.users.length;
-                    document.getElementById('totalDriver').textContent = data.drivers.length;
-                    
-                    // --- PERBAIKAN LOGIKA OMSET ---
-                    const omset = data.pesanan
-                        .filter(p => p.status === 'Selesai') // Hanya hitung yang selesai
-                        .reduce((acc, curr) => {
-                            const harga = parseFloat(curr.harga); // Pastikan dikonversi ke angka
-                            return acc + (isNaN(harga) ? 0 : harga);
-                        }, 0);
-                    
-                    document.getElementById('totalOmset').textContent = formatRupiah(omset);
-
-                    // TABEL PESANAN
-                    const tPesanan = document.getElementById('tablePesanan');
-                    tPesanan.innerHTML = '';
-                    data.pesanan.forEach(p => {
-                        const badge = p.status === 'Selesai' ? 'bg-selesai' : 'bg-proses';
-                        tPesanan.innerHTML += `
-                            <tr>
-                                <td>#${p.id}</td>
-                                <td>User ${p.user_id}</td>
-                                <td>${escapeHTML(p.lokasi_jemput)} ➝ ${escapeHTML(p.tujuan)}</td>
-                                <td>${formatRupiah(p.harga)}</td>
-                                <td><span class="badge ${badge}">${escapeHTML(p.status)}</span></td>
-                                <td>
-                                    <button class="btn-action btn-del" onclick="hapusData('pesanan', ${p.id})">Hapus</button>
-                                </td>
-                            </tr>`;
-                    });
-
-                    // TABEL USERS
-                    const tUsers = document.getElementById('tableUsers');
-                    tUsers.innerHTML = '';
-                    data.users.forEach(u => {
-                        let roleClass = 'bg-user';
-                        if(u.role === 'admin') roleClass = 'bg-admin';
-                        if(u.role === 'driver') roleClass = 'bg-driver';
-
-                        tUsers.innerHTML += `
-                            <tr>
-                                <td>${u.id}</td>
-                                <td><strong>${escapeHTML(u.nama)}</strong></td>
-                                <td>${escapeHTML(u.email)}</td>
-                                <td><span class="badge ${roleClass}" style="cursor:pointer;" onclick="ubahRole(${u.id}, '${u.role}')">${escapeHTML(u.role.toUpperCase())} ✏️</span></td>
-                                <td>
-                                    <button class="btn-action btn-del" onclick="hapusData('users', ${u.id})">Hapus</button>
-                                </td>
-                            </tr>`;
-                    });
-
-                    // TABEL DRIVER
-                    const tDrivers = document.getElementById('tableDrivers');
-                    tDrivers.innerHTML = '';
-                    data.drivers.forEach(d => {
-                        tDrivers.innerHTML += `
-                            <tr>
-                                <td>${d.id}</td>
-                                <td>${escapeHTML(d.nama)}</td>
-                                <td>${escapeHTML(d.jenis_kendaraan)} ${escapeHTML(d.merk_kendaraan)}</td>
-                                <td>${escapeHTML(d.nomor_polisi)}</td>
-                                <td>
-                                    <button class="btn-action btn-del" onclick="hapusData('drivers', ${d.id})">Pecat</button>
-                                </td>
-                            </tr>`;
-                    });
-                }
-            } catch (err) { console.error(err); }
-        }
-
-        async function hapusData(type, id) {
-            if(!confirm("Yakin ingin menghapus data ini secara permanen?")) return;
-            const response = await fetch(`/api/admin/${type}/${id}`, { method: 'DELETE' });
-            const result = await response.json();
-            if(result.success) { alert(result.message); loadAdminData(); } 
-            else { alert("Gagal: " + result.message); }
-        }
-
-        async function ubahRole(id, currentRole) {
-            const newRole = prompt("Masukkan Role Baru (admin / user / driver):", currentRole);
-            if(!newRole || newRole === currentRole) return;
-            if(['admin', 'user', 'driver'].includes(newRole.toLowerCase())) {
-                const response = await fetch(`/api/admin/users/${id}/role`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ role: newRole.toLowerCase() })
-                });
-                const result = await response.json();
-                if(result.success) { alert("Role berhasil diubah!"); loadAdminData(); }
-            } else { alert("Role tidak valid!"); }
-        }
-
-        loadAdminData();
-    </script>
 </body>
 </html>

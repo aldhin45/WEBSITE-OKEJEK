@@ -1,29 +1,59 @@
-document.getElementById("loginForm").addEventListener("submit", async (e) => {
-    e.preventDefault(); // Mencegah reload halaman
+// public/js/login.js
 
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+document.addEventListener('DOMContentLoaded', () => {
+    
+    const loginForm = document.getElementById("loginForm");
 
-    try {
-        const response = await fetch("/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password })
+    if (loginForm) {
+        loginForm.addEventListener("submit", async (e) => {
+            e.preventDefault(); // Mencegah reload halaman
+
+            // Ambil elemen
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+            const btn = document.getElementById("btnSubmit");
+
+            // Ubah tombol jadi loading
+            const textAsli = btn.textContent;
+            btn.textContent = "Memuat...";
+            btn.disabled = true;
+
+            try {
+                // Kirim data ke server
+                const response = await fetch("/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Cek Role untuk Redirect yang sesuai
+                    if (result.role === 'admin') {
+                        window.location.href = "/admin";
+                    } else if (result.role === 'driver') {
+                        window.location.href = "/driver-dashboard";
+                    } else {
+                        window.location.href = "/home"; 
+                    }
+                } else {
+                    // Jika gagal (Password salah / User tidak ada)
+                    alert(result.message);
+                    
+                    // Kembalikan tombol seperti semula
+                    btn.textContent = textAsli;
+                    btn.disabled = false;
+                }
+
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Terjadi kesalahan koneksi ke server.");
+                
+                // Kembalikan tombol seperti semula
+                btn.textContent = textAsli;
+                btn.disabled = false;
+            }
         });
-
-        const result = await response.json();
-
-        if (result.success) {
-            // Simpan userId jika dibutuhkan untuk keperluan frontend lain
-            localStorage.setItem("userId", result.userId);
-            
-            alert("Login Berhasil!");
-            window.location.href = "/home"; // Pindah ke halaman home
-        } else {
-            alert(result.message); // Tampilkan pesan error dari server (misal: Email salah)
-        }
-    } catch (error) {
-        console.error("Error:", error);
-        alert("Terjadi kesalahan pada server");
     }
 });

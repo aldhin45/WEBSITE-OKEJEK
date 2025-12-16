@@ -47,64 +47,7 @@
     <p>© <span id="year"></span> Oke-Jek</p>
   </footer>
 
-  <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
+  <script src="/js/edit-profil.js"></script>
 
-    // 1. SAAT HALAMAN DIBUKA: AMBIL DATA LAMA DARI DATABASE
-    async function loadUserData() {
-        try {
-            const response = await fetch('/api/user');
-            const data = await response.json();
-
-            if (data.success) {
-                document.getElementById('nama').value = data.user.nama;
-                document.getElementById('email').value = data.user.email;
-                // Jika no_telepon null (kosong), isi string kosong
-                document.getElementById('no_telepon').value = data.user.no_telepon || ''; 
-            } else {
-                alert("Gagal memuat data. Silakan login ulang.");
-                window.location.href = '/login';
-            }
-        } catch (error) {
-            console.error("Error:", error);
-        }
-    }
-
-    // Panggil fungsi di atas
-    loadUserData();
-
-
-    // 2. SAAT TOMBOL SIMPAN DITEKAN: KIRIM DATA BARU KE DATABASE
-    const form = document.getElementById('editProfileForm');
-    
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault(); // Jangan refresh halaman
-
-      const nama = document.getElementById('nama').value;
-      const email = document.getElementById('email').value;
-      const no_telepon = document.getElementById('no_telepon').value;
-
-      try {
-          const response = await fetch('/api/user/update', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ nama, email, no_telepon })
-          });
-
-          const result = await response.json();
-
-          if (result.success) {
-              alert(result.message);
-              window.location.href = '/profil'; // Kembali ke halaman profil
-          } else {
-              alert("Gagal: " + result.message);
-          }
-
-      } catch (error) {
-          console.error("Error:", error);
-          alert("Terjadi kesalahan koneksi.");
-      }
-    });
-  </script>
 </body>
 </html>
