@@ -7,7 +7,7 @@ body {
     color: #333; 
 }
 
-/* --- SIDEBAR --- */
+/* SIDEBAR */
 .sidebar { 
     width: 260px; 
     background: #1a1a1a; 
@@ -47,14 +47,14 @@ body {
     margin-top: 50px; 
 }
 
-/* --- CONTENT AREA --- */
+/*  CONTENT AREA */
 .content { 
     margin-left: 260px; 
     padding: 40px; 
     width: 100%; 
 }
 
-/* --- CARDS (STATISTIK) --- */
+/*  CARDS (STATISTIK)  */
 .card-grid { 
     display: grid; 
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
@@ -76,7 +76,7 @@ body {
     color: #1a1a1a; 
 }
 
-/* --- ACTIVE JOB CARD (SPECIAL) --- */
+/*  ACTIVE JOB CARD (SPECIAL) */
 .job-card {
     background: #1a1a1a; 
     color: white; 
@@ -116,7 +116,7 @@ body {
     transform: scale(1.05); 
 }
 
-/* --- TABLES --- */
+/* TABLES  */
 .table-container { 
     background: white; 
     border-radius: 12px; 
@@ -149,7 +149,7 @@ th {
     color: #155724; 
 }
 
-/* --- SECTION TOGGLE --- */
+/* SECTION TOGGLE */
 .section { display: none; }
 .section.active { 
     display: block; 

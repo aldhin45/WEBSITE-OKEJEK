@@ -1,6 +1,4 @@
-/* ======================
-   TEMA DASAR
-====================== */
+/* TEMA DASAR */
 :root {
     --bg: #0b1218;
     --text: #f5f5f5;
@@ -15,9 +13,7 @@ body {
     color: var(--text);
 }
 
-/* ======================
-   NAVBAR
-====================== */
+/* NAVBAR */
 .navbar {
     background: #111a21;
     padding: 15px 60px;
@@ -62,9 +58,7 @@ body {
     color: #ff5c5c !important;
 }
 
-/* ======================
-   KONTEN PROFIL
-====================== */
+/* KONTEN PROFIL */
 .content {
     max-width: 500px;
     margin: 60px auto;
@@ -119,7 +113,7 @@ body {
     margin: 5px 0;
 }
 
-/* Style khusus untuk No Telepon agar sedikit beda */
+/* Style khusus untuk No Telepon  */
 .phone-text {
     color: #888 !important;
     font-size: 0.9rem;

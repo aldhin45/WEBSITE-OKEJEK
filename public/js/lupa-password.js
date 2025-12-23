@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const result = await response.json();
                 
                 if (result.success) {
-                    // SUKSES: Tampilkan Link Reset (Simulasi)
+                    // SUKSES: Tampilkan Link Reset 
                     resultBox.style.display = "block";
                     resultBox.style.backgroundColor = "#155724"; // Hijau sukses
                     resultBox.style.color = "#d4edda";

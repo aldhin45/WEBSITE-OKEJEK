@@ -6,9 +6,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const yearSpan = document.getElementById('year');
     if(yearSpan) yearSpan.textContent = new Date().getFullYear();
 
-    // ------------------------------------------------
+
     // LOGIKA RUTE & ESTIMASI HARGA (DATABASE)
-    // ------------------------------------------------
+
     let dataRute = [];
     const selectRute = document.getElementById('rute_id');
     const selectService = document.getElementById('service');
@@ -73,9 +73,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Jalankan Load Rute
     loadRute();
 
-    // ------------------------------------------------
+
     // LOAD DRIVER ONLINE (DATABASE)
-    // ------------------------------------------------
     async function loadDrivers() {
         const container = document.getElementById('driverGrid');
         if (!container) return;
@@ -88,10 +87,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 container.innerHTML = ''; // Kosongkan loading text
                 
                 result.data.forEach(driver => {
-                    // Buat inisial (Misal: Budi Santoso -> BS)
+                    // Buat inisial 
                     const initials = driver.nama.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
                     
-                    // Simulasi data tambahan (karena di DB simpel)
+                    // Simulasi data tambahan 
                     const jarak = (Math.random() * 3 + 0.5).toFixed(1); 
                     const jenis = driver.jenis_kendaraan || 'Kendaraan';
 
@@ -117,9 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     loadDrivers();
 
-    // ------------------------------------------------
     // PETA (LEAFLET JS)
-    // ------------------------------------------------
     const mapElement = document.getElementById('map');
     if (mapElement && window.L) {
         // Koordinat Default (Misal: Purwokerto/Banyumas)

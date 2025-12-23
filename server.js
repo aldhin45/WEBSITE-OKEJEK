@@ -154,7 +154,7 @@ app.post('/login', loginLimiter, (req, res) => {
     });
 });
 
-// Lupa Password contoh sederhana pake terminal
+// Lupa Password  sederhana pake terminal
 app.post('/api/lupa-password', (req, res) => {
     const { email } = req.body;
     db.query("SELECT * FROM users WHERE email = ?", [email], (err, results) => {

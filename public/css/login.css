@@ -104,7 +104,7 @@ input:focus {
   text-decoration: underline;
 }
 
-/* --- SETUP HALAMAN LOGIN (CENTERING) --- */
+/*  SETUP HALAMAN LOGIN (CENTERING) */
 body {
   display: flex;
   justify-content: center;
@@ -115,7 +115,7 @@ body {
   margin: 0;
 }
 
-/* --- KOTAK LOGIN --- */
+/*  KOTAK LOGIN  */
 .login-container {
   background: #141c22;
   padding: 40px;
@@ -138,7 +138,7 @@ body {
   margin-bottom: 30px;
 }
 
-/* --- FORM STYLE --- */
+/*  FORM STYLE  */
 .form-group {
   margin-bottom: 20px;
   text-align: left;
@@ -169,7 +169,7 @@ input:focus {
   box-shadow: 0 0 8px rgba(0, 224, 143, 0.2);
 }
 
-/* --- TOMBOL --- */
+/*  TOMBOL */
 .btn {
   width: 100%;
   padding: 12px;
@@ -195,7 +195,7 @@ input:focus {
   transform: none;
 }
 
-/* --- LINK FOOTER --- */
+/*  LINK FOOTER  */
 .link {
   margin-top: 20px;
   font-size: 0.9rem;

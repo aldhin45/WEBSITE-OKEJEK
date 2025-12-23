@@ -1,6 +1,4 @@
-/* ======================
-   1. TEMA DASAR 
-====================== */ 
+/* TEMA DASAR  */ 
 :root {
     --bg: #0b1218;         
     --text: #f5f5f5;       
@@ -18,9 +16,7 @@ body {
     color: var(--text);
 }
 
-/* ======================
-   2. NAVBAR 
-====================== */
+/* NAVBAR */
 .navbar {
     background: #111a21;
     padding: 15px 60px;
@@ -65,9 +61,7 @@ body {
     color: #ff5c5c !important;
 }
 
-/* ======================
-   3. LAYOUT KONTEN
-====================== */
+/* LAYOUT KONTEN */
 .content {
     max-width: 500px; 
     margin: 60px auto;
@@ -82,9 +76,7 @@ body {
     margin-bottom: 30px;
 }
 
-/* ======================
-   4. FORM STYLE 
-====================== */
+/* FORM STYLE  */
 .order-form {
     background: var(--card);
     padding: 30px;
@@ -128,9 +120,7 @@ body {
     color: #666;
 }
 
-/* ======================
-   5. BUTTON STYLE 
-====================== */
+/* BUTTON STYLE */
 .btn {
     margin-top: 10px;
     background: var(--accent); 
@@ -157,9 +147,7 @@ body {
     transform: scale(0.98);
 }
 
-/* ======================
-   6. FOOTER
-====================== */
+/* FOOTER */
 .footer {
     text-align: center;
     padding: 30px;

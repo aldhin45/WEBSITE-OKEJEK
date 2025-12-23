@@ -1,4 +1,4 @@
-/* ===== HERO SECTION ===== */
+/* HERO SECTION  */
 .hero {
   background: linear-gradient(120deg, rgba(0,255,170,0.1), rgba(0,255,170,0.05));
   padding: 60px 0;
@@ -35,7 +35,7 @@
   filter: drop-shadow(0 0 10px rgba(0,255,170,0.3));
 }
 
-/* ===== SERVICES SECTION ===== */
+/*  SERVICES SECTION  */
 .services {
   margin-top: 60px;
   text-align: center;
@@ -61,7 +61,7 @@
   box-shadow: 0 6px 20px rgba(0,0,0,0.4);
 }
 
-/* ===== DRIVER SECTION ===== */
+/* DRIVER SECTION */
 .drivers {
   margin: 80px auto;
   text-align: center;
@@ -101,9 +101,7 @@
   font-weight: bold;
 }
 
-/* ======================
-   Tema Dasar
-====================== */
+/* Tema Dasar */
 :root {
   --bg: #0b1218;
   --text: #f5f5f5;
@@ -119,9 +117,7 @@ body {
   color: var(--text);
 }
 
-/* ======================
-   Navbar 
-====================== */
+/* Navbar  */
 .navbar {
   background: #111a21;
   padding: 15px 60px;
@@ -166,9 +162,7 @@ body {
 }
 
 
-/* ======================
-   Hero Section
-====================== */
+/* Hero Section */
 .hero {
   background: linear-gradient(145deg, rgba(0,224,143,0.08), rgba(0,224,143,0.02));
   display: flex;
@@ -215,9 +209,7 @@ body {
   filter: drop-shadow(0 0 20px rgba(0,255,170,0.4));
 }
 
-/* ======================
-   Layanan Populer
-====================== */
+/* Layanan Populer*/
 .services {
   padding: 60px 10%;
   text-align: center;
@@ -268,9 +260,7 @@ body {
   font-weight: 600;
 }
 
-/* ======================
-   Driver Aktif
-====================== */
+/* Driver Aktif */
 .drivers {
   padding: 60px 10%;
   text-align: center;
@@ -315,9 +305,7 @@ body {
   font-weight: bold;
 }
 
-/* ======================
-   Footer
-====================== */
+/* Footer */
 .footer {
   text-align: center;
   padding: 20px;
