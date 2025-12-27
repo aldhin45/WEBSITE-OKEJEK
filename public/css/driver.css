@@ -149,7 +149,7 @@ th {
     color: #155724; 
 }
 
-/* SECTION TOGGLE */
+/*  SECTION TOGGLE */
 .section { display: none; }
 .section.active { 
     display: block; 
