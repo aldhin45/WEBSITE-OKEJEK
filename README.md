@@ -36,7 +36,7 @@ Oke-Jek adalah aplikasi transportasi online berbasis web yang menghubungkan peng
 
 
 ## 📦 Cara Install
-1. Clone repo ini: `git clone https://github.com/username/oke-jek.git`
+1. Clone repo ini: `git clone https://github.com/aldhin45/WEBSITE-OKEJEK.git`
 2. Install dependencies: `npm install`
 3. Import database `okejek.sql` ke MySQL.
 4. Jalankan server: `node server.js`
