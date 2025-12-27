@@ -28,7 +28,6 @@ Oke-Jek adalah aplikasi transportasi online berbasis web yang menghubungkan peng
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/97106899-22cb-4f0c-8340-e2993b3f7c35" />
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/baaa1e84-082a-418e-91ac-c21cf3d59063" />
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/8690c93b-c195-4434-a6b9-da32875c1ffe" />
-![WhatsApp Image 2025-12-27 at 21 23 43](https://github.com/user-attachments/assets/7be92231-934d-4ada-a7fb-0113a75f298f)
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/1aec9bc3-8cee-4c9a-a97b-83e95ae09957" />
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/8da241be-02fd-408e-930e-995c1c8b2076" />
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/fc3cd482-b962-429a-a923-b21a49e7b0ae" />
